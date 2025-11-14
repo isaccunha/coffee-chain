@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  #
+  # gateway
+  # 
+
+  # TODO 
+
+  #
+  # blockchain
+  # 
+
+  # TODO 
+
+  #
+  # frontend
+  # 
+
+  # TODO 
+
+  #
+  # auth
+  # 
+
+  # TODO 
+
+  #
+  # summary-ai
+  #
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama-summarizer
+    ports:
+      - "11434:11434"
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11434
+    volumes:
+      - ollama_data:/root/.ollama
+    mem_limit: 4g
+    restart: unless-stopped
+
+  ollama-init:
+    image: curlimages/curl:latest
+    container_name: ollama-init
+    entrypoint: sh -c 'curl -X POST http://ollama:11434/api/pull -d "{\"name\":\"llama3.2:1b\"}" && echo "Model llama3.2:1b loaded"'
+    restart: on-failure
+
+  harvest-summarizer-service:
+    build: ./harvest-summarizer-service
+    container_name: harvest-summarizer-service
+    ports:
+      - "5000:5000"
+    environment:
+      - OLLAMA_URL=http://ollama:11434
+      - OLLAMA_MODEL=llama3.2:1b
+    depends_on:
+      ollama-init:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+volumes:
+  ollama_data:
