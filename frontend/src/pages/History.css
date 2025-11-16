@@ -1,0 +1,131 @@
+.history {
+  flex: 1;
+}
+
+.history-hero {
+  padding: 4rem 0 2rem;
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+  color: var(--text-light);
+  text-align: center;
+}
+
+.history-hero h1 {
+  color: var(--text-light);
+  margin-bottom: var(--spacing-md);
+}
+
+.history-hero p {
+  font-size: var(--font-size-lg);
+  opacity: 0.9;
+}
+
+.history-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-3xl);
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.stat-card__icon {
+  color: var(--primary);
+}
+
+.stat-card__content {
+  flex: 1;
+}
+
+.stat-card__value {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: var(--spacing-xs);
+}
+
+.stat-card__label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.history-timeline h2 {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.transaction-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.transaction-card__badge {
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: rgba(96, 108, 56, 0.1);
+  color: var(--primary);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
+.transaction-card__status {
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.transaction-card__status--verified {
+  background: var(--primary);
+  color: var(--text-light);
+}
+
+.transaction-card__status--pending {
+  background: var(--secondary);
+  color: var(--text-light);
+}
+
+.transaction-card__title {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-md);
+}
+
+.transaction-card__info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.transaction-info-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+@media (max-width: 768px) {
+  .history-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .transaction-card__info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
