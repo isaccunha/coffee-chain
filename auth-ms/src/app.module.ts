@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { envSchema } from './env';
-import { PrismaService } from './prisma';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -10,8 +10,8 @@ import { PrismaService } from './prisma';
       isGlobal: true,
       validate: (env) => envSchema.parse(env),
     }),
+    AuthModule,
   ],
-  controllers: [],
-  providers: [PrismaService],
+  providers: [],
 })
 export class AppModule {}
