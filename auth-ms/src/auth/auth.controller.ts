@@ -1,9 +1,22 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { AuthService } from './auth.service';
 import { authBodySchema } from './@types';
-import type { AuthBodySchemaType, TokenPayloadType } from './@types';
+import type {
+  AuthBodySchemaType,
+  AuthRequest,
+  TokenPayloadType,
+} from './@types';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -14,7 +27,7 @@ export class AuthController {
 
   @Post()
   @HttpCode(201)
-  async handle(@Body() body: AuthBodySchemaType) {
+  async login(@Body() body: AuthBodySchemaType) {
     const { email, password } = authBodySchema.parse(body);
 
     const user = await this.authService.signIn({
@@ -31,5 +44,16 @@ export class AuthController {
 
     const token = this.jwtService.sign(userPayload);
     return { token };
+  }
+
+  @Get()
+  @HttpCode(200)
+  @UseGuards(JwtAuthGuard)
+  checkToken(@Request() req: AuthRequest) {
+    const userPayload = req.user;
+
+    return {
+      ...userPayload,
+    };
   }
 }
