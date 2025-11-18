@@ -7,6 +7,8 @@ services:
       POSTGRES_USER: docker
       POSTGRES_PASSWORD: docker
       POSTGRES_DB: users
-      PGDATA: /data/postgres
     volumes:
-      - ./data:/data/postgres
+      - auth-db-data:/bitnami/postgresql
+
+volumes:
+  auth-db-data:
