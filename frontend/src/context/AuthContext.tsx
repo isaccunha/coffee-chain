@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { User, LoginCredentials, RegisterData, AuthResponse } from '../types'
+import { TokenPayload, LoginCredentials, RegisterData, AuthResponse } from '../types'
 import { login as apiLogin, register as apiRegister, getCurrentUser } from '../services/api'
 
 interface AuthContextValue {
-  user: User | null
+  user: TokenPayload | null
   isAuthenticated: boolean
   isLoading: boolean
   login: (credentials: LoginCredentials) => Promise<void>
@@ -14,7 +14,7 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<TokenPayload | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -40,7 +40,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const response: AuthResponse = await apiLogin(credentials)
       localStorage.setItem('token', response.token)
-      setUser(response.user)
+      // fetches user data after login
+      const userData = await getCurrentUser()
+      setUser(userData)
     } catch (error) {
       throw error
     }
@@ -50,7 +52,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const response: AuthResponse = await apiRegister(data)
       localStorage.setItem('token', response.token)
-      setUser(response.user)
+      // fetches user data after registration
+      const userData = await getCurrentUser()
+      setUser(userData)
     } catch (error) {
       throw error
     }
