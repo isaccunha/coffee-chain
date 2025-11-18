@@ -12,7 +12,15 @@ Repositório para o ground-breaking, job-getter, interviewer-impresser "coffee-c
 
 ## Como rodar
 
-Execute `./run-all.sh` na raíz do projeto para subir Postgres, o auth service (NestJS) e o frontend (Vite) de uma vez.
+#### Linux
+Execute `./run-all.sh` na raíz do projeto para subir Postgres, o auth service (NestJS) e o frontend (Vite) de uma vez só, abrindo 3 terminais gnome separados.
+
+#### Windows 10+
+Execute o arquivo run-all.bat como administrador.
+
+> [!TIP]
+> É possível rodar direto em ambas as plataformas pelo vscode. 
+> Ctrl+Shift+P, e então execute *Tasks: Run Task*.
 
 ### Pré-requisitos
 
@@ -43,7 +51,4 @@ FRONTEND_CMD="npm run dev -- --port 4173" ./run-all.sh
 
 ## Autoria
 
-[Gabriel Coelho Costa](https://github.com/gabrielzinCoelho)
-[Isac Gonçalves Cunha](https://github.com/isaccunha)
-[Otávio Sbampato](https://github.com/otaviosbampato)
-[Paulo Henrique Ribeiro Alves](https://github.com/paulohenrique64)
+[Gabriel Coelho Costa](https://github.com/gabrielzinCoelho)<br>[Isac Gonçalves Cunha](https://github.com/isaccunha)<br>[Otávio Sbampato](https://github.com/otaviosbampato)<br>[Paulo Henrique Ribeiro Alves](https://github.com/paulohenrique64)
