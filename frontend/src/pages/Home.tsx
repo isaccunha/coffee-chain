@@ -114,7 +114,7 @@ const Home = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2>Por que CoffeeChain?</h2>
+            <h2>Por que coffee-chain?</h2>
             <p>Safras auditadas, backend integrado e experiência de luxo para o café brasileiro</p>
           </motion.div>
           <div className="features__grid">
@@ -152,7 +152,7 @@ const Home = () => {
               <h3>Modo Comprador</h3>
               <p>Consulta instantânea de safra, lote, pontuação, disponibilidade e preço FOB.</p>
               <ul>
-                <li>Acesso ao gateway CoffeeChain</li>
+                <li>Acesso ao gateway coffee-chain</li>
                 <li>Alertas de disponibilidade e safra especial</li>
                 <li>Integração com ERPs e marketplace</li>
               </ul>
@@ -186,7 +186,7 @@ const Home = () => {
           <div className="how-it-works__steps">
             {[
               { step: '01', title: 'Pré-Safra', description: 'Fiscais coletam dados de campo, laudos e certificações direto no app.' },
-              { step: '02', title: 'Validação Gateway', description: 'API CoffeeChain consolida e assina os dados, gerando o hash blockchain.' },
+              { step: '02', title: 'Validação Gateway', description: 'API coffee-chain consolida e assina os dados, gerando o hash blockchain.' },
               { step: '03', title: 'Consulta Premium', description: 'Compradores acessam o mesmo registro, com disponibilidade e histórico.' }
             ].map((item, index) => (
               <motion.div
@@ -219,7 +219,7 @@ const Home = () => {
             transition={{ duration: 0.6 }}
           >
             <h2>Chega de PDF e WhatsApp</h2>
-            <p>Sincronize o gateway CoffeeChain com sua cooperativa e ofereça consulta premium de safra.</p>
+            <p>Sincronize o gateway coffee-chain com sua cooperativa e ofereça consulta premium de safra.</p>
             <Button variant="secondary" size="lg" onClick={() => window.location.href = '/cadastro'}>
               Começar agora
               <ArrowRight size={20} />

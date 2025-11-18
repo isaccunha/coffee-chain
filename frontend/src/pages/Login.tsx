@@ -41,19 +41,25 @@ const Login = () => {
         >
           <div className="auth-header">
             <LogIn size={32} className="auth-icon" />
-            <h1>Entrar no CoffeeChain</h1>
+            <h1>Entrar no coffee-chain</h1>
             <p>Acesse sua conta e consulte safras certificadas</p>
           </div>
 
-          {/* Role info - login doesn't require role selection */}
+          {/* Role info - login doesn't require role selection, just informative */}
           <div className="role-selector">
             <div className="role-option role-option--info">
               <ShoppingBag size={24} />
-              <span>Comprador (BUYER)</span>
+              <div>
+                <span>Comprador (BUYER)</span>
+                <small>Consulta de safras e lotes</small>
+              </div>
             </div>
             <div className="role-option role-option--info">
               <ShieldCheck size={24} />
-              <span>Fiscal (INSPECTOR)</span>
+              <div>
+                <span>Fiscal (INSPECTOR)</span>
+                <small>Registro e auditoria</small>
+              </div>
             </div>
           </div>
 
@@ -125,7 +131,7 @@ const Login = () => {
 
           <p className="auth-note">
             <AlertCircle size={16} />
-            Este é um sistema de demonstração. As credenciais serão criadas durante o cadastro.
+            Seu perfil (comprador ou fiscal) foi definido no cadastro. Entre com suas credenciais para acessar.
           </p>
         </motion.div>
       </div>
