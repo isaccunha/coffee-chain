@@ -15,7 +15,11 @@ const Card = ({ children, className = '', hover = true }: CardProps) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
-      whileHover={hover ? { y: -5, boxShadow: 'var(--shadow-xl)' } : {}}
+      whileHover={
+        hover
+          ? { y: -5, boxShadow: '0 35px 55px rgba(67, 40, 24, 0.18)' }
+          : {}
+      }
     >
       {children}
     </motion.div>
