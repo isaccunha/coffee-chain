@@ -1,0 +1,52 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start DB",
+      "type": "shell",
+      "command": "docker-compose -f auth-ms/docker-compose.yml up",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "run-all"
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Start Auth Server",
+      "type": "shell",
+      "command": "npm run start:dev",
+      "options": {
+        "cwd": "${workspaceFolder}/auth-ms"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "run-all"
+      },
+      "isBackground": true,
+      "problemMatcher": ["$tsc-watch"]
+    },
+    {
+      "label": "Start Frontend",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "group": "run-all"
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Run All Services",
+      "dependsOn": ["Start DB", "Start Auth Server", "Start Frontend"],
+      "problemMatcher": []
+    }
+  ]
+}
