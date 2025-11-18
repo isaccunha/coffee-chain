@@ -11,13 +11,15 @@ services:
   # blockchain
   # 
 
-  # TODO 
-
-  #
-  # frontend
-  # 
-
-  # TODO 
+  
+  frontend:
+    build: ./frontend
+    container_name: coffeechain-frontend
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    depends_on:
+      - harvest-summarizer-service 
 
   #
   # auth

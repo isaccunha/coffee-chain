@@ -6,6 +6,11 @@ import { EnvType } from './env';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  // enable CORS for frontend
+  app.enableCors({
+    origin: ['http://localhost:3000', 'http://localhost:5173'],
+    credentials: true,
+  });
   const configService: ConfigService<EnvType, true> = app.get(ConfigService);
   const serverPort = configService.get('API_PORT', {
     infer: true,

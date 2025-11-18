@@ -1,0 +1,297 @@
+.fiscal {
+  flex: 1;
+}
+
+.fiscal-hero {
+  padding: 6rem 0 4rem;
+  background: linear-gradient(145deg, rgba(111, 29, 27, 0.95), rgba(67, 40, 24, 0.95));
+  color: var(--text-light);
+}
+
+.fiscal-hero__content {
+  max-width: 720px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-full);
+  background: rgba(255, 230, 167, 0.15);
+  color: var(--peach);
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.fiscal-hero h1 {
+  color: var(--text-light);
+  margin-top: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.fiscal-hero__subtitle {
+  font-size: var(--font-size-lg);
+  color: rgba(255, 230, 167, 0.92);
+  margin-bottom: var(--spacing-2xl);
+  line-height: 1.8;
+}
+
+.fiscal-hero__cta {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.fiscal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-3xl);
+}
+
+.queue-card,
+.timeline-card,
+.checklist-card,
+.attachments-card {
+  background: rgba(255, 252, 245, 0.9);
+  border: 1px solid rgba(153, 88, 42, 0.15);
+}
+
+.queue-label {
+  font-size: var(--font-size-sm);
+  color: var(--secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+.queue-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.queue-item {
+  border: 1px solid transparent;
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg);
+  background: rgba(255, 230, 167, 0.15);
+  color: var(--text-primary);
+  text-align: left;
+  transition: all var(--transition-base);
+}
+
+.queue-item.active {
+  border-color: rgba(111, 29, 27, 0.4);
+  background: rgba(111, 29, 27, 0.12);
+  box-shadow: var(--shadow-md);
+}
+
+.queue-item__top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-sm);
+  font-weight: 600;
+}
+
+.queue-item__score {
+  color: var(--secondary);
+}
+
+.queue-item__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.queue-item__bottom {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.timeline-hash {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.timeline-step {
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(153, 88, 42, 0.2);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.timeline-step__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timeline-step--done .timeline-step__icon {
+  background: rgba(111, 29, 27, 0.1);
+  color: var(--primary);
+}
+
+.timeline-step--active .timeline-step__icon {
+  background: rgba(187, 148, 87, 0.2);
+  color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.timeline-step--next .timeline-step__icon {
+  border: 1px dashed rgba(153, 88, 42, 0.3);
+  color: var(--text-secondary);
+}
+
+.timeline-step__title {
+  font-weight: 600;
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-xs);
+}
+
+.timeline-step__description {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.dispatch {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.checklist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--spacing-xl);
+}
+
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.checklist-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--spacing-md);
+  align-items: center;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(153, 88, 42, 0.15);
+}
+
+.checklist-item__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 230, 167, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+}
+
+.checklist-item__title {
+  font-weight: 600;
+}
+
+.checklist-item__description {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.checklist-item__status {
+  text-transform: capitalize;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.checklist-item--aprovado {
+  border-color: rgba(111, 29, 27, 0.25);
+  background: rgba(111, 29, 27, 0.05);
+}
+
+.checklist-item--pendente .checklist-item__status {
+  color: var(--secondary);
+}
+
+.checklist-item--bloqueado {
+  opacity: 0.6;
+}
+
+.attachments-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xl);
+}
+
+.attachment {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-xl);
+  background: rgba(255, 230, 167, 0.12);
+}
+
+.attachment__name {
+  font-weight: 600;
+}
+
+.attachment__meta {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.attachments-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .fiscal-hero {
+    padding: 4rem 0 2rem;
+  }
+
+  .dispatch,
+  .fiscal-hero__cta,
+  .attachments-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .queue-item__bottom {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  .checklist-item {
+    grid-template-columns: 1fr;
+    text-align: left;
+  }
+}
