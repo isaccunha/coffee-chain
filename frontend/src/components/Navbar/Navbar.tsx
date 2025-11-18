@@ -20,8 +20,8 @@ const Navbar = () => {
 
   const menuItems = [
     { path: '/', label: 'Safras', icon: Coffee, public: true },
-    { path: '/rastrear', label: 'Consultar', icon: Search, role: 'comprador' },
-    { path: '/fiscal', label: 'Fiscal', icon: User, role: 'fiscal' },
+    { path: '/rastrear', label: 'Consultar', icon: Search, role: 'BUYER' },
+    { path: '/fiscal', label: 'Fiscal', icon: User, role: 'INSPECTOR' },
     { path: '/historico', label: 'Auditoria', icon: History, auth: true },
   ]
 
@@ -82,7 +82,7 @@ const Navbar = () => {
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                   aria-label="User menu"
                 >
-                  {user?.role === 'fiscal' ? <ShieldCheck size={20} /> : <ShoppingBag size={20} />}
+                  {user?.role === 'INSPECTOR' ? <ShieldCheck size={20} /> : <ShoppingBag size={20} />}
                   <span>{user?.name}</span>
                 </button>
                 
@@ -99,7 +99,7 @@ const Navbar = () => {
                         <strong>{user?.name}</strong>
                         <span>{user?.email}</span>
                         <span className="navbar__user-role">
-                          {user?.role === 'fiscal' ? (
+                          {user?.role === 'INSPECTOR' ? (
                             <>
                               <ShieldCheck size={14} /> Fiscal
                             </>
@@ -168,10 +168,10 @@ const Navbar = () => {
             {isAuthenticated ? (
               <>
                 <div className="navbar__mobile-user">
-                  {user?.role === 'fiscal' ? <ShieldCheck size={18} /> : <ShoppingBag size={18} />}
+                  {user?.role === 'INSPECTOR' ? <ShieldCheck size={18} /> : <ShoppingBag size={18} />}
                   <div>
                     <strong>{user?.name}</strong>
-                    <span>{user?.role === 'fiscal' ? 'Fiscal' : 'Comprador'}</span>
+                    <span>{user?.role === 'INSPECTOR' ? 'Fiscal' : 'Comprador'}</span>
                   </div>
                 </div>
                 <button onClick={handleLogout} className="navbar__mobile-logout">

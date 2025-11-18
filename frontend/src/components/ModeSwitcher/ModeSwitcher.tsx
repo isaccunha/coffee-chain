@@ -4,13 +4,13 @@ import './ModeSwitcher.css'
 
 const modes = [
   {
-    id: 'comprador' as const,
+    id: 'BUYER' as const,
     label: 'Modo Comprador',
     description: 'Consulta de safras, laudos, pontuação e lote disponível',
     icon: ShoppingBag,
   },
   {
-    id: 'fiscal' as const,
+    id: 'INSPECTOR' as const,
     label: 'Modo Fiscal',
     description: 'Registro de safra, auditoria e envio para blockchain',
     icon: ShieldCheck,

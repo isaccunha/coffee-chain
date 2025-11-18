@@ -5,7 +5,6 @@ import { LogIn, Mail, Lock, AlertCircle, ShieldCheck, ShoppingBag } from 'lucide
 import Button from '../components/Button/Button'
 import Card from '../components/Card/Card'
 import { useAuth } from '../context/AuthContext'
-import { UserRole } from '../types'
 import './Login.css'
 
 const Login = () => {
@@ -15,7 +14,6 @@ const Login = () => {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [selectedRole, setSelectedRole] = useState<UserRole>('comprador')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -47,24 +45,16 @@ const Login = () => {
             <p>Acesse sua conta e consulte safras certificadas</p>
           </div>
 
-          {/* Role Selection */}
+          {/* Role info - login doesn't require role selection */}
           <div className="role-selector">
-            <button
-              type="button"
-              className={`role-option ${selectedRole === 'comprador' ? 'role-option--active' : ''}`}
-              onClick={() => setSelectedRole('comprador')}
-            >
+            <div className="role-option role-option--info">
               <ShoppingBag size={24} />
-              <span>Comprador</span>
-            </button>
-            <button
-              type="button"
-              className={`role-option ${selectedRole === 'fiscal' ? 'role-option--active' : ''}`}
-              onClick={() => setSelectedRole('fiscal')}
-            >
+              <span>Comprador (BUYER)</span>
+            </div>
+            <div className="role-option role-option--info">
               <ShieldCheck size={24} />
-              <span>Fiscal</span>
-            </button>
+              <span>Fiscal (INSPECTOR)</span>
+            </div>
           </div>
 
           <Card>

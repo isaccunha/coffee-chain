@@ -38,15 +38,13 @@ export interface Transaction {
 }
 
 // Auth types
-export type UserRole = 'comprador' | 'fiscal'
+export type UserRole = 'BUYER' | 'INSPECTOR'
 
 export interface User {
-  id: string
+  sub: string
   name: string
   email: string
   role: UserRole
-  organization?: string
-  createdAt: string
 }
 
 export interface LoginCredentials {
@@ -63,6 +61,12 @@ export interface RegisterData {
 }
 
 export interface AuthResponse {
-  user: User
   token: string
+}
+
+export interface TokenPayload {
+  sub: string
+  name: string
+  email: string
+  role: UserRole
 }

@@ -24,7 +24,7 @@ function App() {
               <Route 
                 path="/rastrear" 
                 element={
-                  <ProtectedRoute requiredRole="comprador">
+                  <ProtectedRoute requiredRole="BUYER">
                     <Track />
                   </ProtectedRoute>
                 } 
@@ -32,7 +32,7 @@ function App() {
               <Route 
                 path="/fiscal" 
                 element={
-                  <ProtectedRoute requiredRole="fiscal">
+                  <ProtectedRoute requiredRole="INSPECTOR">
                     <Fiscal />
                   </ProtectedRoute>
                 } 

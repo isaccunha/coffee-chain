@@ -18,7 +18,7 @@ const Register = () => {
     confirmPassword: '',
     organization: '',
   })
-  const [role, setRole] = useState<UserRole>('comprador')
+  const [role, setRole] = useState<UserRole>('BUYER')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
@@ -80,8 +80,8 @@ const Register = () => {
           <div className="role-selector">
             <button
               type="button"
-              className={`role-option ${role === 'comprador' ? 'role-option--active' : ''}`}
-              onClick={() => setRole('comprador')}
+              className={`role-option ${role === 'BUYER' ? 'role-option--active' : ''}`}
+              onClick={() => setRole('BUYER')}
             >
               <ShoppingBag size={24} />
               <div>
@@ -91,8 +91,8 @@ const Register = () => {
             </button>
             <button
               type="button"
-              className={`role-option ${role === 'fiscal' ? 'role-option--active' : ''}`}
-              onClick={() => setRole('fiscal')}
+              className={`role-option ${role === 'INSPECTOR' ? 'role-option--active' : ''}`}
+              onClick={() => setRole('INSPECTOR')}
             >
               <ShieldCheck size={24} />
               <div>
@@ -149,7 +149,7 @@ const Register = () => {
                 />
               </div>
 
-              {role === 'fiscal' && (
+              {role === 'INSPECTOR' && (
                 <div className="form-group">
                   <label htmlFor="organization">
                     <Building size={18} />
