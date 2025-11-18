@@ -1,0 +1,69 @@
+{
+    "chain": [
+        {
+            "index": 1,
+            "timestamp": "2025-11-17 02:37:29.365622",
+            "data": [],
+            "proof": 1,
+            "previous_hash": "0",
+            "proof_difficulty": 4
+        },
+        {
+            "index": 2,
+            "timestamp": "2025-11-17 02:37:40.519235",
+            "data": [
+                {
+                    "id": "safra-teste-1",
+                    "inserted_at": "2025-11-17 02:37:31.042947",
+                    "temperatura": 25,
+                    "umidade": 44,
+                    "owner": "isac"
+                },
+                {
+                    "id": "safra-teste-1",
+                    "inserted_at": "2025-11-17 02:37:40.518526",
+                    "temperatura": 30,
+                    "umidade": 41,
+                    "owner": "isac"
+                }
+            ],
+            "proof": 453,
+            "previous_hash": "7bca318c716667118631832d2fa4c7c7b412e049675cd7f91abc82509e7af72d",
+            "proof_difficulty": 4
+        },
+        {
+            "index": 3,
+            "timestamp": "2025-11-17 02:39:37.887706",
+            "data": [
+                {
+                    "id": "safra-teste-1",
+                    "inserted_at": "2025-11-17 02:38:52.068123",
+                    "temperatura": 37,
+                    "umidade": 41,
+                    "owner": "isac"
+                },
+                {
+                    "id": "safra-teste-1",
+                    "inserted_at": "2025-11-17 02:39:37.613124",
+                    "temperatura": 0,
+                    "umidade": 41,
+                    "owner": "isac"
+                }
+            ],
+            "proof": 211345,
+            "previous_hash": "43cd3f3b8c49fe5482c92d8bfbf5a38f0aed9d41a7dde655499cb75f551e649f",
+            "proof_difficulty": 4
+        }
+    ],
+    "pending_data": [
+        {
+            "id": "safra-teste-1",
+            "inserted_at": "2025-11-16 23:44:48.819432-03:00",
+            "temperatura": 0,
+            "umidade": 41,
+            "owner": "isac"
+        }
+    ],
+    "difficulty": 4,
+    "min_batch_size": 2
+}
