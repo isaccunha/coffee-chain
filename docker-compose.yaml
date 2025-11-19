@@ -3,15 +3,47 @@ version: '3.8'
 services:
   #
   # gateway
-  # 
+  #
 
-  # TODO 
+  gateway:
+    build: ./gateway
+    container_name: coffeechain-gateway
+    ports:
+      - "5002:5002"
+    environment:
+      - AUTH_API_URL=http://localhost:3333
+      - BLOCKCHAIN_API_URL=http://blockchain:5000
+      - SUMMARY_API_URL=http://summary-ai:5000
+      - API_GATEWAY_PORT=5002
+      - API_GATEWAY_HOST=0.0.0.0
+      - FLASK_ENV=production
+      - FLASK_DEBUG=False
+    depends_on:
+      # - auth-ms
+      - blockchain
+      - summary-ai
+    restart: unless-stopped
 
   #
   # blockchain
-  # 
+  #
 
-  
+  blockchain:
+    build: ./blockchain
+    container_name: coffeechain-blockchain
+    ports:
+      - "5001:5000"
+    environment:
+      - FLASK_APP=run.py
+      - FLASK_ENV=production
+    volumes:
+      - blockchain_data:/app/data
+    restart: unless-stopped
+
+  #
+  # frontend
+  #
+
   frontend:
     build: ./frontend
     container_name: coffeechain-frontend
@@ -19,13 +51,17 @@ services:
       - "3000:80"
     restart: unless-stopped
     depends_on:
-      - harvest-summarizer-service 
+      - summary-ai
 
   #
   # auth
-  # 
+  #
 
-  # TODO 
+  # auth-ms:
+  # TODO
+
+  # postgres:
+  # TODO
 
   #
   # summary-ai
@@ -48,9 +84,9 @@ services:
     entrypoint: sh -c 'curl -X POST http://ollama:11434/api/pull -d "{\"name\":\"llama3.2:1b\"}" && echo "Model llama3.2:1b loaded"'
     restart: on-failure
 
-  harvest-summarizer-service:
-    build: ./harvest-summarizer-service
-    container_name: harvest-summarizer-service
+  summary-ai:
+    build: ./summary-ai
+    container_name: summary-ai
     ports:
       - "5000:5000"
     environment:
@@ -63,3 +99,5 @@ services:
 
 volumes:
   ollama_data:
+  postgres_data:
+  blockchain_data:

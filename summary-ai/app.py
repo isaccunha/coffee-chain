@@ -31,10 +31,9 @@ def summarize_crop_data(crop_data: dict) -> dict:
     farm_name = crop_data.get("farm_name", "N/A")
     location = crop_data.get("location", "N/A")
     harvest_date = crop_data.get("harvest_date", "N/A")
-    quality_grade = crop_data.get("quality_grade", "N/A")
-    weight = crop_data.get("weight", "0")
+    coffee_variety = crop_data.get("coffee_variety", "N/A")
+    coffee_bags = crop_data.get("coffee_bags", "0")
     processing_method = crop_data.get("processing_method", "N/A")
-    coffe_variety = crop_data.get("coffe_variety", "N/A")
     altitude = crop_data.get("altitude", "N/A")
     certifications = crop_data.get("certifications", [])
     notes = crop_data.get("notes", "")
@@ -46,10 +45,9 @@ def summarize_crop_data(crop_data: dict) -> dict:
 Fazenda: {farm_name}
 Localização: {location}
 Data da Colheita: {harvest_date}
-Grau de Qualidade: {quality_grade}
-Peso: {weight}
+Quantidade de sacas: {coffee_bags}
 Método de Processamento: {processing_method}
-Variedade do Café: {coffe_variety}
+Variedade do Café: {coffee_variety}
 Altitude: {altitude}
 Certificações: {certifications_str}
 Observações: {notes}
@@ -65,7 +63,7 @@ Mantenha o resumo conciso e adequado para exibição no frontend."""
     if not is_ollama_available():
         return {
             "success": False,
-            "summary": f"{farm_name} ({quality_grade} grade) - {weight} from {location}, {processing_method} processed {coffe_variety}.",
+            "summary": f"{farm_name} - {coffee_bags} from {location}, {processing_method} processed {coffee_variety}.",
             "fallback": True,
             "reason": "ollama_unavailable"
         }
@@ -93,7 +91,7 @@ Mantenha o resumo conciso e adequado para exibição no frontend."""
             if attempt == MAX_RETRIES - 1:
                 return {
                     "success": False,
-                    "summary": f"{farm_name} ({quality_grade} grade) - {weight} from {location}, {processing_method} processed {coffe_variety}.",
+                    "summary": f"{farm_name} - {coffee_bags} from {location}, {processing_method} processed {coffee_variety}.",
                     "fallback": True,
                     "reason": "timeout_after_retries"
                 }
@@ -101,7 +99,7 @@ Mantenha o resumo conciso e adequado para exibição no frontend."""
         except requests.exceptions.RequestException as e:
             return {
                 "success": False,
-                "summary": f"{farm_name} ({quality_grade} grade) - {weight} from {location}, {processing_method} processed {coffe_variety}.",
+                "summary": f"{farm_name} - {coffee_bags} from {location}, {processing_method} processed {coffee_variety}.",
                 "fallback": True,
                 "reason": type(e).__name__
             }
@@ -130,7 +128,7 @@ def summarize():
                 "code": "INVALID_JSON"
             }), 400
         
-        required_fields = ["farm_name", "harvest_date", "quality_grade"]
+        required_fields = ["farm_name", "harvest_date"]
         missing_fields = [f for f in required_fields if f not in crop_data]
         
         if missing_fields:
