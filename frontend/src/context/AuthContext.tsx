@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { TokenPayload, LoginCredentials, RegisterData, AuthResponse } from '../types'
+import { LoginCredentials, RegisterData, AuthResponse, AuthenticatedUser } from '../types'
 import { login as apiLogin, register as apiRegister, getCurrentUser } from '../services/api'
 
 interface AuthContextValue {
-  user: TokenPayload | null
+  user: AuthenticatedUser | null
   isAuthenticated: boolean
   isLoading: boolean
   login: (credentials: LoginCredentials) => Promise<void>
@@ -14,7 +14,7 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<TokenPayload | null>(null)
+  const [user, setUser] = useState<AuthenticatedUser | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -23,7 +23,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (token) {
       getCurrentUser()
         .then((userData) => {
-          setUser(userData)
+            if (userData.success) {
+                setUser(userData.user)
+            } else {
+                localStorage.removeItem('token')
+            }
         })
         .catch(() => {
           localStorage.removeItem('token')
@@ -42,7 +46,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.setItem('token', response.token)
       // fetches user data after login
       const userData = await getCurrentUser()
-      setUser(userData)
+      if (userData.success) {
+        setUser(userData.user)
+      } else {
+        localStorage.removeItem('token')
+      }
     } catch (error) {
       throw error
     }
@@ -54,7 +62,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.setItem('token', response.token)
       // fetches user data after registration
       const userData = await getCurrentUser()
-      setUser(userData)
+      if (userData.success) {
+        setUser(userData.user)
+      } else {
+        localStorage.removeItem('token')
+      }
     } catch (error) {
       throw error
     }

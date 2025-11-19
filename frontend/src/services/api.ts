@@ -1,14 +1,11 @@
 import axios from 'axios'
-import { CoffeeData, Harvest, Transaction, LoginCredentials, RegisterData, AuthResponse, TokenPayload } from '../types'
+import { CoffeeData, Harvest, Transaction, LoginCredentials, RegisterData, AuthResponse, VerifyTokenResponse } from '../types'
 
-// separate base URLs for different services
-const AUTH_API_URL = import.meta.env.VITE_AUTH_API_URL || 'http://localhost:3333'
-const BLOCKCHAIN_API_URL = import.meta.env.VITE_BLOCKCHAIN_API_URL || 'http://localhost:8000'
-const SUMMARIZER_API_URL = import.meta.env.VITE_SUMMARIZER_API_URL || 'http://localhost:5000'
+const GATEWAY_API_URL = import.meta.env.GATEWAY_API_URL || 'http://localhost:5002'
 
 // auth API instance
 const authApi = axios.create({
-  baseURL: AUTH_API_URL,
+  baseURL: GATEWAY_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -16,7 +13,7 @@ const authApi = axios.create({
 
 // ! blockchain API instance (not yet integrated)
 const blockchainApi = axios.create({
-  baseURL: BLOCKCHAIN_API_URL,
+  baseURL: GATEWAY_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -24,7 +21,7 @@ const blockchainApi = axios.create({
 
 // ! summarizer API instance (not yet integrated)
 const summarizerApi = axios.create({
-  baseURL: SUMMARIZER_API_URL,
+  baseURL: GATEWAY_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -67,6 +64,7 @@ export const trackCoffee = async (code: string): Promise<CoffeeData> => {
 }
 
 // producer API (TODO: implement blockchain endpoints)
+
 export const createHarvest = async (harvest: Partial<Harvest>): Promise<Harvest> => {
   const response = await blockchainApi.post('/harvest', harvest)
   return response.data
@@ -101,7 +99,7 @@ export const generateSummary = async (harvestData: any): Promise<string> => {
 
 // auth API - matches backend endpoints
 export const login = async (credentials: LoginCredentials): Promise<AuthResponse> => {
-  const response = await authApi.post('/auth', credentials)
+  const response = await authApi.post('/auth/login', credentials)
   return response.data
 }
 
@@ -110,8 +108,8 @@ export const register = async (_data: RegisterData): Promise<AuthResponse> => {
   throw new Error('registration endpoint not implemented')
 }
 
-export const getCurrentUser = async (): Promise<TokenPayload> => {
-  const response = await authApi.get('/auth')
+export const getCurrentUser = async (): Promise<VerifyTokenResponse> => {
+  const response = await authApi.get('/auth/verify')
   return response.data
 }
 

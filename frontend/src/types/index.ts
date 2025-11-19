@@ -11,12 +11,26 @@ export interface CoffeeData {
   blockchainHash: string
 }
 
+
+//     "farm_name": "Sítio Vale Verde",
+//     "location": "Lavras",
+//     "harvest_date": "2025-11-10",
+//     "coffee_variety": "Arábica",
+//     "altitude": "960",
+//     "coffee_bags": "1225",
+//     "processing_method": "Manual",
+//     "certifications": [
+//         {
+//             "name":  "Best Coffee"
+//         }
+//     ],
+//     "notes": "hello world"
+// }
 export interface Harvest {
-  id: number
-  farm: string
+  farm_name: string
   location: string
-  date: string
-  variety: string
+  harvest_date: string
+  coffee_variety: string
   altitude: number
   process: string
   quantity: number
@@ -64,9 +78,14 @@ export interface AuthResponse {
   token: string
 }
 
-export interface TokenPayload {
-  sub: string
+export interface AuthenticatedUser {
+  sub: string        
   name: string
   email: string
   role: UserRole
+}
+
+export interface VerifyTokenResponse {
+  success: boolean
+  user: AuthenticatedUser
 }
