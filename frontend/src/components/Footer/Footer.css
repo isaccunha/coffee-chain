@@ -29,6 +29,13 @@
   margin-bottom: var(--spacing-sm);
 }
 
+.footer__logo {
+  height: 28px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(88%) sepia(19%) saturate(1046%) hue-rotate(320deg) brightness(103%) contrast(100%);
+}
+
 .footer__description {
   font-size: var(--font-size-sm);
   line-height: 1.6;

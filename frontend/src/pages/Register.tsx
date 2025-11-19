@@ -73,7 +73,7 @@ const Register = () => {
           <div className="auth-header">
             <UserPlus size={32} className="auth-icon" />
             <h1>Criar Conta</h1>
-            <p>Junte-se ao CoffeeChain e acesse safras certificadas</p>
+            <p>Junte-se ao coffee-chain e acesse safras certificadas</p>
           </div>
 
           {/* Role Selection */}
@@ -224,7 +224,7 @@ const Register = () => {
 
           <p className="auth-note">
             <AlertCircle size={16} />
-            Ao criar uma conta, você concorda com os termos de uso do CoffeeChain.
+            Ao criar uma conta, você concorda com os termos de uso do coffee-chain.
           </p>
         </motion.div>
       </div>
