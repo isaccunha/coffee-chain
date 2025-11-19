@@ -12,34 +12,124 @@ Repositório para o ground-breaking, job-getter, interviewer-impresser "coffee-c
 
 ## Como rodar
 
-Execute `./run-all.sh` na raíz do projeto para subir Postgres, o auth service (NestJS) e o frontend (Vite) de uma vez.
+### Execução Completa com Docker Compose (Recomendado)
+
+```bash
+docker-compose up -d
+```
+
+Este comando inicia todos os serviços:
+- **Frontend**: http://localhost:3000
+- **Gateway API**: http://localhost:5002
+- **Auth Service**: http://localhost:3333 (interno)
+- **Blockchain**: http://localhost:5001 (porta mapeada)
+- **Summary AI**: integrado via gateway
+- **PostgreSQL**: interno
+- **Ollama**: http://localhost:11434 (interno, para modelo de IA)
 
 ### Pré-requisitos
 
-- Docker rodando localmente. Se seu usuário não tiver permissão de acessar o socket, o script usa `sudo docker ...` automaticamente e pedirá a senha.
-- Node.js 18+ e `npm` disponíveis no PATH do usuário (para que os processos de frontend/auth rodem fora do `sudo`).
+- Docker e Docker Compose instalados
+- Mínimo 4GB de RAM disponível (para Ollama)
+- Conexão com internet para download do modelo LLM (~2GB)
 
-### Customização rápida
+### Desenvolvimento Local
 
-Se precisar ajustar comando ou porta, você pode exportar variáveis antes de rodar:
-
-- `AUTH_CMD` – comando do serviço de autenticação (padrão `npm run start:dev`)
-- `FRONTEND_CMD` – comando do frontend (padrão `npm run dev -- --host 0.0.0.0 --port 5173`)
-- `AUTH_DB_USER`, `AUTH_DB_PASSWORD`, `AUTH_DB_NAME` – credenciais do Postgres se você alterar o `docker-compose`.
-
-Exemplo prático:
+Se preferir rodar serviços localmente:
 
 ```bash
-FRONTEND_CMD="npm run dev -- --port 4173" ./run-all.sh
+# Terminal 1: Gateway API (Python)
+cd gateway
+pip install -r requirements.txt
+python app.py
+
+# Terminal 2: Auth Service (NestJS)
+cd auth-ms
+npm install
+npm run start:dev
+
+# Terminal 3: Blockchain (Python)
+cd blockchain
+pip install -r requirements.txt
+python run.py
+
+# Terminal 4: Frontend (React)
+cd frontend
+npm install
+npm run dev
+
+# Terminal 5: Dependências (Docker)
+docker-compose -f docker-compose.dev.yaml up
 ```
 
 ## Features
 
-- Autenticação com fluxo de login e registro para diferentes perfis.
-- Cadastro de produtores e propriedades.
-- Criação e acompanhamento de lotes de café ao longo da cadeia.
-- Histórico de movimentações para rastrear o que aconteceu com cada lote.
-- Frontend em Vite + React pensado para uso rápido em ambiente de teste.
+- **Autenticação JWT**: Login seguro com tokens
+- **Gateway API**: Ponto único de entrada com validação centralizada
+- **Blockchain**: Registro imutável de safras
+- **IA Generativa**: Sumarização automática de dados com Ollama
+- **Rastreamento Completo**: Histórico de movimentações das safras
+- **Interface Moderna**: Frontend com React + TypeScript
+- **Microserviços**: Arquitetura escalável e modulada
+
+## API Gateway
+
+O Gateway API em Python Flask integra todos os serviços:
+
+- Validação rigorosa de entrada com Pydantic
+- Middleware de autenticação JWT
+- Tratamento centralizado de erros
+- Mensagens de erro claras e descritivas
+
+### Endpoints Principais
+
+```bash
+# Health Check
+GET /health
+GET /health/dependencies
+
+# Autenticação
+POST /auth/login
+POST /auth/verify
+
+# Safra (Blockchain)
+POST /safra
+GET /safra/<id>
+GET /safra/<id>/history
+GET /safra/validate
+
+# Sumarização
+POST /summary
+GET /summary/health
+```
+
+Veja `DEPLOYMENT.md` para documentação completa dos endpoints.
+
+## Stack Tecnológico
+
+### Frontend
+- React 18 + TypeScript
+- Vite + TailwindCSS
+- Context API para estado
+
+### Backend
+- **Gateway**: Flask + Pydantic + Gunicorn
+- **Auth**: NestJS + Prisma + PostgreSQL
+- **Blockchain**: Python Flask (blockchain customizado)
+- **Summary**: Python Flask + Ollama (llama3.2:1b)
+
+## Testes
+
+```bash
+chmod +x test-gateway.sh
+./test-gateway.sh
+```
+
+Script automatizado que testa:
+- Health checks
+- Login e verificação de token
+- Fluxo completo de safra
+- Sumarização com IA
 
 ## Autoria
 
