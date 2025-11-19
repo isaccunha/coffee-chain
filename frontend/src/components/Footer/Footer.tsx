@@ -1,4 +1,4 @@
-import { Coffee, Github, Linkedin, Mail } from 'lucide-react'
+import { Github, Linkedin, Mail } from 'lucide-react'
 import './Footer.css'
 
 const Footer = () => {
@@ -8,8 +8,8 @@ const Footer = () => {
         <div className="footer__content">
           <div className="footer__section">
             <div className="footer__brand">
-              <Coffee size={24} />
-              <span>CoffeeChain</span>
+              <img src="/logo.png" alt="coffee-chain" className="footer__logo" />
+              <span>coffee-chain</span>
             </div>
             <p className="footer__description">
               Rastreabilidade transparente do café brasileiro usando tecnologia blockchain.
@@ -46,7 +46,7 @@ const Footer = () => {
               <a href="#linkedin" aria-label="LinkedIn">
                 <Linkedin size={20} />
               </a>
-              <a href="mailto:contato@coffeechain.com" aria-label="Email">
+              <a href="mailto:contato@coffee-chain.com" aria-label="Email">
                 <Mail size={20} />
               </a>
             </div>
@@ -54,7 +54,7 @@ const Footer = () => {
         </div>
 
         <div className="footer__bottom">
-          <p>&copy; {new Date().getFullYear()} CoffeeChain. Desenvolvido na UFLA.</p>
+          <p>&copy; {new Date().getFullYear()} coffee-chain. Desenvolvido na UFLA.</p>
           <p>Blockchain para rastreabilidade de café.</p>
         </div>
       </div>

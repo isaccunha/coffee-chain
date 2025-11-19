@@ -122,7 +122,7 @@ const Fiscal = () => {
             <p className="hero-badge">Modo Fiscal</p>
             <h1>Audite e libere safras em minutos</h1>
             <p className="fiscal-hero__subtitle">
-              Conectado ao gateway CoffeeChain, o modo fiscal reúne checklist inteligente,
+              Conectado ao gateway coffee-chain, o modo fiscal reúne checklist inteligente,
               anexos oficiais e disparo de hash blockchain na mesma tela.
             </p>
             <div className="fiscal-hero__cta">

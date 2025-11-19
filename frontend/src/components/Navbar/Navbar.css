@@ -29,6 +29,12 @@
   color: var(--primary-dark);
 }
 
+.navbar__logo {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+}
+
 .navbar__menu {
   display: flex;
   align-items: center;

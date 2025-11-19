@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Coffee, Search, User, History, Menu, X, LogOut, ShieldCheck, ShoppingBag, LogIn } from 'lucide-react'
+import { Search, User, History, Menu, X, LogOut, ShieldCheck, ShoppingBag, LogIn } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import './Navbar.css'
 
@@ -19,7 +19,7 @@ const Navbar = () => {
   }
 
   const menuItems = [
-    { path: '/', label: 'Safras', icon: Coffee, public: true },
+    { path: '/', label: 'Início', icon: null, public: true },
     { path: '/rastrear', label: 'Consultar', icon: Search, role: 'BUYER' },
     { path: '/fiscal', label: 'Fiscal', icon: User, role: 'INSPECTOR' },
     { path: '/historico', label: 'Auditoria', icon: History, auth: true },
@@ -42,8 +42,8 @@ const Navbar = () => {
       <div className="container">
         <div className="navbar__content">
           <Link to="/" className="navbar__brand">
-            <Coffee size={28} />
-            <span>CoffeeChain</span>
+            <img src="/logo.png" alt="coffee-chain" className="navbar__logo" />
+            <span>coffee-chain</span>
           </Link>
 
           {/* Desktop Menu */}
@@ -58,7 +58,7 @@ const Navbar = () => {
                     to={item.path} 
                     className={`navbar__link ${isActive ? 'navbar__link--active' : ''}`}
                   >
-                    <Icon size={18} />
+                    {Icon && <Icon size={18} />}
                     <span>{item.label}</span>
                     {isActive && (
                       <motion.div 
@@ -157,7 +157,7 @@ const Navbar = () => {
                 className={`navbar__mobile-link ${isActive ? 'navbar__mobile-link--active' : ''}`}
                 onClick={() => setIsOpen(false)}
               >
-                <Icon size={20} />
+                {Icon && <Icon size={20} />}
                 <span>{item.label}</span>
               </Link>
             )

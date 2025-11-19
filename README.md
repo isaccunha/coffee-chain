@@ -12,20 +12,15 @@ Repositório para o ground-breaking, job-getter, interviewer-impresser "coffee-c
 
 ## Como rodar
 
-### Execução Completa com Docker Compose (Recomendado)
+#### Linux
+Execute `./run-all.sh` na raíz do projeto para subir Postgres, o auth service (NestJS) e o frontend (Vite) de uma vez só, abrindo 3 terminais gnome separados.
 
-```bash
-docker-compose up -d
-```
+#### Windows 10+
+Execute o arquivo run-all.bat como administrador.
 
-Este comando inicia todos os serviços:
-- **Frontend**: http://localhost:3000
-- **Gateway API**: http://localhost:5002
-- **Auth Service**: http://localhost:3333 (interno)
-- **Blockchain**: http://localhost:5001 (porta mapeada)
-- **Summary AI**: integrado via gateway
-- **PostgreSQL**: interno
-- **Ollama**: http://localhost:11434 (interno, para modelo de IA)
+> [!TIP]
+> É possível rodar direto em ambas as plataformas pelo vscode. 
+> Ctrl+Shift+P, e então execute *Tasks: Run Task*.
 
 ### Pré-requisitos
 
@@ -133,7 +128,4 @@ Script automatizado que testa:
 
 ## Autoria
 
-[Gabriel Coelho Costa](https://github.com/gabrielzinCoelho)
-[Isac Gonçalves Cunha](https://github.com/isaccunha)
-[Otávio Sbampato](https://github.com/otaviosbampato)
-[Paulo Henrique Ribeiro Alves](https://github.com/paulohenrique64)
+[Gabriel Coelho Costa](https://github.com/gabrielzinCoelho)<br>[Isac Gonçalves Cunha](https://github.com/isaccunha)<br>[Otávio Sbampato](https://github.com/otaviosbampato)<br>[Paulo Henrique Ribeiro Alves](https://github.com/paulohenrique64)
