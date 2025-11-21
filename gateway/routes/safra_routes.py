@@ -27,20 +27,8 @@ def create_safra():
         return jsonify(get_validation_error_response(errors)), 400
     
     safra_payload = validated_data.dict(exclude_none=True)
-    user_identifier = request.user.get('email') or request.user.get('sub', 'unknown')
 
-    # {
-    #    "id": "safra-teste-1",
-    #    "inserted_at": "2025-11-17 02:37:31.042947",
-    #    "owner": "isac"
-    # }
-    safra_payload.update({
-        "id": f"safra-{uuid.uuid4()}",        
-        "inserted_at": datetime.utcnow().isoformat(),  
-        "owner": user_identifier            
-    })
-
-    success, result, error = blockchain_service.add_safra(safra_payload, user_identifier)
+    success, result, error = blockchain_service.add_safra(safra_payload, request.token)
     
     if not success:
         status_code = error.get('status', 500)
@@ -63,7 +51,7 @@ def get_safra(safra_id):
             'code': 'INVALID_SAFRA_ID'
         }), 400
     
-    success, result, error = blockchain_service.get_safra(safra_id)
+    success, result, error = blockchain_service.get_safra(safra_id, request.token)
     
     if not success:
         status_code = error.get('status', 500)
@@ -86,7 +74,7 @@ def get_safra_history(safra_id):
             'code': 'INVALID_SAFRA_ID'
         }), 400
     
-    success, result, error = blockchain_service.get_safra_history(safra_id)
+    success, result, error = blockchain_service.get_safra_history(safra_id, request.token)
     
     if not success:
         status_code = error.get('status', 500)
@@ -103,7 +91,7 @@ def get_safra_history(safra_id):
 @safra_bp.route('/validate', methods=['GET'])
 @require_token
 def validate_blockchain():
-    success, result, error = blockchain_service.validate_blockchain()
+    success, result, error = blockchain_service.validate_blockchain(request.token)
     
     if not success:
         status_code = error.get('status', 500)

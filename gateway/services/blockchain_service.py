@@ -10,7 +10,7 @@ class BlockchainService:
     def add_safra(self, safra_data: Dict[str, Any], user_token: str) -> tuple[bool, Optional[Dict[str, Any]], Optional[Dict[str, Any]]]:
         try:
             headers = {
-                'X-User': user_token,
+                'Authorization': f"Bearer {user_token}",
                 'Content-Type': 'application/json'
             }
             response = requests.post(
@@ -33,10 +33,15 @@ class BlockchainService:
         except Exception as e:
             return False, None, {'message': f'Unexpected error: {str(e)}', 'status': 500}
     
-    def get_safra(self, safra_id: str) -> tuple[bool, Optional[Dict[str, Any]], Optional[Dict[str, Any]]]:
+    def get_safra(self, safra_id: str, user_token: str) -> tuple[bool, Optional[Dict[str, Any]], Optional[Dict[str, Any]]]:
         try:
+            headers = {
+                'Authorization': f"Bearer {user_token}",
+                'Content-Type': 'application/json'
+            }
             response = requests.get(
                 f'{self.blockchain_url}/safra/{safra_id}',
+                headers=headers,
                 timeout=self.timeout
             )
             
@@ -56,10 +61,15 @@ class BlockchainService:
         except Exception as e:
             return False, None, {'message': f'Unexpected error: {str(e)}', 'status': 500}
     
-    def get_safra_history(self, safra_id: str) -> tuple[bool, Optional[Dict[str, Any]], Optional[Dict[str, Any]]]:
+    def get_safra_history(self, safra_id: str, user_token: str) -> tuple[bool, Optional[Dict[str, Any]], Optional[Dict[str, Any]]]:
         try:
+            headers = {
+                'Authorization': f"Bearer {user_token}",
+                'Content-Type': 'application/json'
+            }
             response = requests.get(
                 f'{self.blockchain_url}/safra/{safra_id}/historico',
+                headers=headers,
                 timeout=self.timeout
             )
             
@@ -79,10 +89,15 @@ class BlockchainService:
         except Exception as e:
             return False, None, {'message': f'Unexpected error: {str(e)}', 'status': 500}
     
-    def validate_blockchain(self) -> tuple[bool, Optional[Dict[str, Any]], Optional[Dict[str, Any]]]:
+    def validate_blockchain(self, user_token: str) -> tuple[bool, Optional[Dict[str, Any]], Optional[Dict[str, Any]]]:
         try:
+            headers = {
+                'Authorization': f"Bearer {user_token}",
+                'Content-Type': 'application/json'
+            }
             response = requests.get(
                 f'{self.blockchain_url}/valid',
+                headers=headers,
                 timeout=self.timeout
             )
             

@@ -12,5 +12,4 @@ class Config:
     AUTH_API_URL = os.getenv('AUTH_API_URL', 'http://localhost:3333')
     BLOCKCHAIN_API_URL = os.getenv('BLOCKCHAIN_API_URL', 'http://localhost:5001')
     SUMMARY_API_URL = os.getenv('SUMMARY_API_URL', 'http://localhost:5000')
-    
-    JWT_SECRET = os.getenv('JWT_SECRET', 'change-this-secret-key')
+

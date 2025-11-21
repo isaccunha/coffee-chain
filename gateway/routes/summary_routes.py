@@ -6,6 +6,16 @@ from validators import SummarizeRequest, validate_request_body, get_validation_e
 summary_bp = Blueprint('summary', __name__, url_prefix='/summary')
 summary_service = SummaryService()
 
+# class SummarizeRequest(BaseModel):
+#     farm_name: str = Field(..., min_length=1)
+#     location: str = Field(..., min_length=1)
+#     harvest_date: str = Field(..., min_length=1)
+#     coffee_variety: str = Field(..., min_length=1)
+#     altitude: str = Field(..., min_length=1)
+#     coffee_bags: int = Field(..., gt=0)  
+#     processing_method: str = Field(..., min_length=1)
+#     certifications: list[dict[str, str]] = Field(...)
+#     notes: str = Field(..., min_length=1)
 @summary_bp.route('', methods=['POST'])
 @require_json
 @require_token
@@ -24,8 +34,8 @@ def summarize():
         return jsonify(get_validation_error_response(errors)), 400
     
     crop_data = validated_data.dict(exclude_none=True)
-    
-    success, result, error = summary_service.summarize_crop(crop_data)
+
+    success, result, error = summary_service.summarize_crop(crop_data, request.token)
     
     if not success:
         status_code = error.get('status', 500)
@@ -40,8 +50,9 @@ def summarize():
     }), 200
 
 @summary_bp.route('/health', methods=['GET'])
+@require_token
 def health():
-    success, result, error = summary_service.health_check()
+    success, result, error = summary_service.health_check(request.token)
     
     if not success:
         status_code = error.get('status', 500)

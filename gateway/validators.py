@@ -34,10 +34,10 @@ class SummarizeRequest(BaseModel):
     harvest_date: str = Field(..., min_length=1)
     coffee_variety: str = Field(..., min_length=1)
     altitude: str = Field(..., min_length=1)
-    coffee_bags: int = Field(..., gt=0)  
+    coffee_bags: int = Field(..., ge=0)  
     processing_method: str = Field(..., min_length=1)
     certifications: list[dict[str, str]] = Field(...)
-    notes: str = Field(..., min_length=1)
+    notes: str = Field(...)
 
 class SafraIdRequest(BaseModel):
     safra_id: str = Field(..., min_length=1)
