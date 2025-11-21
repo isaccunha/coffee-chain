@@ -1,47 +1,99 @@
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Clock, MapPin, Package, TrendingUp } from 'lucide-react'
 import Card from '../components/Card/Card'
+import { validateBlockchain } from '../services/api'
 import './History.css'
 
 const History = () => {
-  const transactions = [
-    {
-      id: 1,
-      type: 'Registro',
-      farm: 'Fazenda Santa Clara',
-      location: 'Sul de Minas Gerais',
-      date: '15/10/2024',
-      quantity: '100 sacas',
-      status: 'Verificado'
-    },
-    {
-      id: 2,
-      type: 'Processamento',
-      farm: 'Fazenda Boa Vista',
-      location: 'Cerrado Mineiro',
-      date: '12/10/2024',
-      quantity: '80 sacas',
-      status: 'Em andamento'
-    },
-    {
-      id: 3,
-      type: 'Registro',
-      farm: 'Sítio Verde',
-      location: 'Mogiana',
-      date: '10/10/2024',
-      quantity: '50 sacas',
-      status: 'Verificado'
-    },
-    {
-      id: 4,
-      type: 'Colheita',
-      farm: 'Fazenda Esperança',
-      location: 'Sul de Minas',
-      date: '08/10/2024',
-      quantity: '120 sacas',
-      status: 'Verificado'
+  const [transactions, setTransactions] = useState<any[]>([])
+  const [stats, setStats] = useState({
+    totalBags: 0,
+    totalTransactions: 0,
+    totalFarms: 0,
+    verifiedPercent: 0
+  })
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        if (!token) {
+          return
+        }
+
+        // Fetch transactions from blockchain validation
+        const validationData = await validateBlockchain()
+        const transactionsList = validationData?.data?.transactions || []
+        
+        setTransactions(transactionsList)
+
+        // Calculate stats
+        if (transactionsList.length > 0) {
+          const totalBags = transactionsList.reduce((sum: number, t: any) => {
+            const bags = parseInt(t.quantity || '0') || 0
+            return sum + bags
+          }, 0)
+
+          const farms = new Set(transactionsList.map((t: any) => t.farm))
+          
+          const verified = transactionsList.filter((t: any) => 
+            t.status === 'Verificado' || t.status === 'verified'
+          ).length
+
+          setStats({
+            totalBags,
+            totalTransactions: transactionsList.length,
+            totalFarms: farms.size,
+            verifiedPercent: transactionsList.length > 0 ? 
+              Math.round((verified / transactionsList.length) * 100) : 0
+          })
+        }
+      } catch (err: any) {
+        // Fallback to mock data if API fails
+        setTransactions([
+          {
+            id: 1,
+            type: 'Registro',
+            farm: 'Fazenda Santa Clara',
+            location: 'Sul de Minas Gerais',
+            date: '15/10/2024',
+            quantity: '100',
+            status: 'Verificado'
+          },
+          {
+            id: 2,
+            type: 'Processamento',
+            farm: 'Fazenda Boa Vista',
+            location: 'Cerrado Mineiro',
+            date: '12/10/2024',
+            quantity: '80',
+            status: 'Em andamento'
+          },
+          {
+            id: 3,
+            type: 'Registro',
+            farm: 'Sítio Verde',
+            location: 'Mogiana',
+            date: '10/10/2024',
+            quantity: '50',
+            status: 'Verificado'
+          },
+          {
+            id: 4,
+            type: 'Colheita',
+            farm: 'Fazenda Esperança',
+            location: 'Sul de Minas',
+            date: '08/10/2024',
+            quantity: '120',
+            status: 'Verificado'
+          }
+        ])
+      }
     }
-  ]
+
+    fetchData()
+  }, [])
 
   return (
     <div className="history">
@@ -65,7 +117,7 @@ const History = () => {
               <div className="stat-card">
                 <Package className="stat-card__icon" size={32} />
                 <div className="stat-card__content">
-                  <div className="stat-card__value">350</div>
+                  <div className="stat-card__value">{stats.totalBags}</div>
                   <div className="stat-card__label">Sacas Totais</div>
                 </div>
               </div>
@@ -74,7 +126,7 @@ const History = () => {
               <div className="stat-card">
                 <Clock className="stat-card__icon" size={32} />
                 <div className="stat-card__content">
-                  <div className="stat-card__value">4</div>
+                  <div className="stat-card__value">{stats.totalTransactions}</div>
                   <div className="stat-card__label">Transações</div>
                 </div>
               </div>
@@ -83,7 +135,7 @@ const History = () => {
               <div className="stat-card">
                 <MapPin className="stat-card__icon" size={32} />
                 <div className="stat-card__content">
-                  <div className="stat-card__value">4</div>
+                  <div className="stat-card__value">{stats.totalFarms}</div>
                   <div className="stat-card__label">Fazendas</div>
                 </div>
               </div>
@@ -92,7 +144,7 @@ const History = () => {
               <div className="stat-card">
                 <TrendingUp className="stat-card__icon" size={32} />
                 <div className="stat-card__content">
-                  <div className="stat-card__value">100%</div>
+                  <div className="stat-card__value">{stats.verifiedPercent}%</div>
                   <div className="stat-card__label">Verificadas</div>
                 </div>
               </div>

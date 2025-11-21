@@ -45,24 +45,6 @@ const Login = () => {
             <p>Acesse sua conta e consulte safras certificadas</p>
           </div>
 
-          {/* Role info - login doesn't require role selection, just informative */}
-          <div className="role-selector">
-            <div className="role-option role-option--info">
-              <ShoppingBag size={24} />
-              <div>
-                <span>Comprador (BUYER)</span>
-                <small>Consulta de safras e lotes</small>
-              </div>
-            </div>
-            <div className="role-option role-option--info">
-              <ShieldCheck size={24} />
-              <div>
-                <span>Fiscal (INSPECTOR)</span>
-                <small>Registro e auditoria</small>
-              </div>
-            </div>
-          </div>
-
           <Card>
             <form onSubmit={handleSubmit} className="auth-form">
               {error && (

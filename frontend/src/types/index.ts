@@ -1,43 +1,32 @@
-export interface CoffeeData {
-  id: string
-  origin: string
-  location: string
-  producer: string
-  harvestDate: string
-  variety: string
-  altitude: string
-  process: string
-  certification: string
-  blockchainHash: string
+export interface CoffeeCertification {
+  name: string
 }
 
-
-//     "farm_name": "Sítio Vale Verde",
-//     "location": "Lavras",
-//     "harvest_date": "2025-11-10",
-//     "coffee_variety": "Arábica",
-//     "altitude": "960",
-//     "coffee_bags": "1225",
-//     "processing_method": "Manual",
-//     "certifications": [
-//         {
-//             "name":  "Best Coffee"
-//         }
-//     ],
-//     "notes": "hello world"
-// }
-export interface Harvest {
-  farm_name: string
-  location: string
-  harvest_date: string
+export interface CoffeeData {
+  id: string
+  altitude: string
+  certifications: CoffeeCertification[]
+  coffee_bags: number
   coffee_variety: string
-  altitude: number
-  process: string
-  quantity: number
-  certifications: string[]
-  notes?: string
-  status: 'pending' | 'verified' | 'processing'
-  blockchainHash?: string
+  farm_name: string
+  harvest_date: string
+  inserted_at: string
+  location: string
+  notes: string
+  owner: string
+  processing_method: string
+}
+
+export interface Harvest {
+  altitude: string
+  certifications: CoffeeCertification[]
+  coffee_bags: number
+  coffee_variety: string
+  farm_name: string
+  harvest_date: string
+  location: string
+  notes: string
+  processing_method: string
 }
 
 export interface Transaction {

@@ -7,7 +7,6 @@ import {
   FileCheck, 
   History, 
   TrendingUp,
-  Package,
   CheckCircle,
   Clock,
   AlertCircle
@@ -22,13 +21,6 @@ const Dashboard = () => {
   const navigate = useNavigate()
 
   // Mock data - replace with real data from API
-  const buyerStats = {
-    activePurchases: 12,
-    pendingApprovals: 3,
-    completedOrders: 48,
-    savedSearches: 7
-  }
-
   const inspectorStats = {
     pendingInspections: 8,
     completedToday: 5,
@@ -65,12 +57,12 @@ const Dashboard = () => {
                   Painel do Comprador
                 </h1>
                 <p className="dashboard__subtitle">
-                  Bem-vindo, {user.name}! Aqui está um resumo das suas atividades.
+                  Bem-vindo, {user.name}!
                 </p>
               </div>
             </div>
 
-            {/* Stats Grid */}
+            {/* Stats Grid
             <div className="dashboard__stats">
               <Card>
                 <div className="stat-card">
@@ -108,7 +100,7 @@ const Dashboard = () => {
                   </div>
                 </div>
               </Card>
-            </div>
+            </div> */}
 
             {/* Quick Actions */}
             <div className="dashboard__section">
