@@ -1,6 +1,11 @@
 from flask import Blueprint, request, jsonify
 from .storage import load_state, save_state
 from .blockchain import Blockchain
+from middleware import require_role, require_json, require_token
+
+import uuid
+
+from datetime import datetime
 
 bp = Blueprint("routes", __name__)
 
@@ -18,16 +23,22 @@ def persist():
 # POST /safra — adiciona nova safra
 # ---------------------------------------------------------
 @bp.route("/safra", methods=["POST"])
+@require_json
+@require_token
+@require_role("INSPECTOR")
 def add_safra():
     payload = request.json
-    user = request.headers.get("X-User")
+    user_email = request.user_email
 
     if not payload:
         return jsonify({"error": "JSON ausente"}), 400
-    if not user:
-        return jsonify({"error": "Header X-User obrigatorio"}), 400
 
-    payload["owner"] = user
+    payload.update({
+        "id": f"safra-{uuid.uuid4()}",        
+        "inserted_at": datetime.utcnow().isoformat(),  
+        "owner": user_email            
+    })
+    
     added = blockchain.add_data(payload)
 
     # Se já atingir min_batch_size, minera automaticamente
@@ -55,6 +66,8 @@ def add_safra():
 # GET /safra/<id> — retorna a versão mais recente da safra
 # ---------------------------------------------------------
 @bp.route("/safra/<safra_id>", methods=["GET"])
+@require_token
+@require_role("INSPECTOR", "BUYER")
 def get_safra(safra_id):
     todas = []
 
@@ -88,6 +101,8 @@ def get_safra(safra_id):
 # GET /valid — verifica integridade da blockchain
 # ---------------------------------------------------------
 @bp.route("/valid", methods=["GET"])
+@require_token
+@require_role("INSPECTOR")
 def is_valid():
     valid = blockchain.chain_valid(blockchain.chain)
     return jsonify({"valid": valid}), 200
@@ -96,6 +111,8 @@ def is_valid():
 # GET /safra/<id>/historico — retorna todas versões da safra
 # ---------------------------------------------------------
 @bp.route("/safra/<safra_id>/historico", methods=["GET"])
+@require_token
+@require_role("INSPECTOR", "BUYER")
 def safra_historico(safra_id):
     historico = []
 

@@ -53,17 +53,174 @@
             "proof": 211345,
             "previous_hash": "43cd3f3b8c49fe5482c92d8bfbf5a38f0aed9d41a7dde655499cb75f551e649f",
             "proof_difficulty": 4
-        }
-    ],
-    "pending_data": [
+        },
         {
-            "id": "safra-teste-1",
-            "inserted_at": "2025-11-16 23:44:48.819432-03:00",
-            "temperatura": 0,
-            "umidade": 41,
-            "owner": "isac"
+            "index": 4,
+            "timestamp": "2025-11-21 01:17:09.957142-03:00",
+            "data": [
+                {
+                    "id": "safra-teste-1",
+                    "inserted_at": "2025-11-16 23:44:48.819432-03:00",
+                    "temperatura": 0,
+                    "umidade": 41,
+                    "owner": "isac"
+                },
+                {
+                    "id": "64960b9d-e00d-47e4-9268-6fbe5b2af6f1",
+                    "inserted_at": "2025-11-21 01:17:09.877540-03:00",
+                    "farm_name": "S\u00edtio Vale Verde",
+                    "location": "Lavras",
+                    "harvest_date": "2025-11-10",
+                    "coffee_variety": "Ar\u00e1bica",
+                    "altitude": "960",
+                    "coffee_bags": 1225,
+                    "processing_method": "Manual",
+                    "certifications": [
+                        {
+                            "name": "Best Coffee"
+                        }
+                    ],
+                    "notes": "hello world",
+                    "owner": "t"
+                }
+            ],
+            "proof": 45373,
+            "previous_hash": "45fe458c73daf5560d94981affe1512326755d284899a0220dc683d86d2e32de",
+            "proof_difficulty": 4
+        },
+        {
+            "index": 5,
+            "timestamp": "2025-11-21 01:23:48.042019-03:00",
+            "data": [
+                {
+                    "id": "bcd34eae-dd9b-44cc-a749-077fb4c0f929",
+                    "inserted_at": "2025-11-21 01:19:53.511580-03:00",
+                    "farm_name": "S\u00edtio Vale Verde",
+                    "location": "Lavras",
+                    "harvest_date": "2025-11-10",
+                    "coffee_variety": "Ar\u00e1bica",
+                    "altitude": "960",
+                    "coffee_bags": 1225,
+                    "processing_method": "Manual",
+                    "certifications": [
+                        {
+                            "name": "Best Coffee"
+                        }
+                    ],
+                    "notes": "hello world",
+                    "owner": "t"
+                },
+                {
+                    "id": "safra-291fb112-2677-4113-980b-1044869081a9",
+                    "inserted_at": "2025-11-21T04:23:47.935153",
+                    "farm_name": "S\u00edtio Vale Verde",
+                    "location": "Lavras",
+                    "harvest_date": "2025-11-10",
+                    "coffee_variety": "Ar\u00e1bica",
+                    "altitude": "960",
+                    "coffee_bags": 1225,
+                    "processing_method": "Manual",
+                    "certifications": [
+                        {
+                            "name": "Best Coffee"
+                        }
+                    ],
+                    "notes": "hello world",
+                    "owner": "johndoe@example.com"
+                }
+            ],
+            "proof": 60201,
+            "previous_hash": "1341793eb8e348286100a86295cf9038fb382f6ac88010a0504ed0a2d303d4ec",
+            "proof_difficulty": 4
+        },
+        {
+            "index": 6,
+            "timestamp": "2025-11-21 01:23:53.508480-03:00",
+            "data": [
+                {
+                    "id": "safra-4282fff8-beda-448a-ae6f-817c6cf2144a",
+                    "inserted_at": "2025-11-21T04:23:51.361372",
+                    "farm_name": "S\u00edtio Vale Verde",
+                    "location": "Lavras",
+                    "harvest_date": "2025-11-10",
+                    "coffee_variety": "Ar\u00e1bica",
+                    "altitude": "960",
+                    "coffee_bags": 1225,
+                    "processing_method": "Manual",
+                    "certifications": [
+                        {
+                            "name": "Best Coffee"
+                        }
+                    ],
+                    "notes": "hello world",
+                    "owner": "johndoe@example.com"
+                },
+                {
+                    "id": "safra-e860bc28-2e2b-4654-b629-6773602c0bf4",
+                    "inserted_at": "2025-11-21T04:23:53.293822",
+                    "farm_name": "S\u00edtio Vale Verde",
+                    "location": "Lavras",
+                    "harvest_date": "2025-11-10",
+                    "coffee_variety": "Ar\u00e1bica",
+                    "altitude": "960",
+                    "coffee_bags": 1225,
+                    "processing_method": "Manual",
+                    "certifications": [
+                        {
+                            "name": "Best Coffee"
+                        }
+                    ],
+                    "notes": "hello world",
+                    "owner": "johndoe@example.com"
+                }
+            ],
+            "proof": 120211,
+            "previous_hash": "41ab4a3f8615b1c790b5a2469237eb00118c2405e837eaa211bb9105cc8ee2ef",
+            "proof_difficulty": 4
+        },
+        {
+            "index": 7,
+            "timestamp": "2025-11-21 02:20:44.404479-03:00",
+            "data": [
+                {
+                    "id": "safra-5ca2e138-cb32-4d62-a089-a83f4fb03ce7",
+                    "inserted_at": "2025-11-21T05:13:48.689615",
+                    "farm_name": "regergergre",
+                    "location": "ergregergergreg",
+                    "harvest_date": "2025-11-04",
+                    "coffee_variety": "ergergre",
+                    "altitude": "ergergre",
+                    "coffee_bags": 43534534,
+                    "processing_method": "natural",
+                    "certifications": [],
+                    "notes": "ergergregerge",
+                    "owner": "janedoe@example.com"
+                },
+                {
+                    "id": "safra-a86c4ad8-a457-4d57-bc45-010a0370cb1e",
+                    "inserted_at": "2025-11-21T05:20:44.367048",
+                    "farm_name": "S\u00edtio Vale Verde",
+                    "location": "Lavras",
+                    "harvest_date": "2025-11-10",
+                    "coffee_variety": "Ar\u00e1bica",
+                    "altitude": "960",
+                    "coffee_bags": 1225,
+                    "processing_method": "Manual",
+                    "certifications": [
+                        {
+                            "name": "Best Coffee"
+                        }
+                    ],
+                    "notes": "hello world",
+                    "owner": "janedoe@example.com"
+                }
+            ],
+            "proof": 20944,
+            "previous_hash": "587c06716ffb20702cc7d5f6d1f9dd4d81c4b48eedd1e420e4ae17116108bd95",
+            "proof_difficulty": 4
         }
     ],
+    "pending_data": [],
     "difficulty": 4,
     "min_batch_size": 2
 }
