@@ -11,6 +11,8 @@ import { JwtService } from '@nestjs/jwt';
 
 import { AuthService } from './auth.service';
 import { authBodySchema } from './@types';
+import { ConfigService } from '@nestjs/config';
+
 import type {
   AuthBodySchemaType,
   AuthRequest,
@@ -23,6 +25,7 @@ export class AuthController {
   constructor(
     private authService: AuthService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   @Post()
@@ -54,6 +57,19 @@ export class AuthController {
 
     return {
       ...userPayload,
+    };
+  }
+
+  @Get('public-key')
+  @HttpCode(200)
+  getPublicKey() {
+    const publicKeyBase64 = this.configService.get<string>('JWT_PUBLIC_KEY', {
+      infer: true,
+    });
+
+    return {
+      alg: 'RS256',
+      publicKey: publicKeyBase64, 
     };
   }
 }
