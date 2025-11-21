@@ -5,12 +5,15 @@ import requests
 import json
 import time
 
+from config import Config
+from middleware import require_role, require_json, require_token
+
 load_dotenv()
 
 app = Flask(__name__)
 
-OLLAMA_URL = os.getenv("OLLAMA_URL")
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL")
+OLLAMA_URL = Config.OLLAMA_URL
+OLLAMA_MODEL = Config.OLLAMA_MODEL
 REQUEST_TIMEOUT = 120
 MAX_RETRIES = 2
 RETRY_DELAY = 1
@@ -104,8 +107,9 @@ Mantenha o resumo conciso e adequado para exibição no frontend."""
                 "reason": type(e).__name__
             }
 
-
 @app.route("/health", methods=["GET"])
+@require_token
+@require_role("BUYER")
 def health():
     ollama_status = "available" if is_ollama_available(retries=1) else "unavailable"
     return jsonify({
@@ -118,6 +122,9 @@ def health():
 
 
 @app.route("/summarize", methods=["POST"])
+@require_token
+@require_role("BUYER")
+@require_json
 def summarize():
     try:
         crop_data = request.get_json()
