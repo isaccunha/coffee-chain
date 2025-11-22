@@ -1,16 +1,16 @@
-FROM node:20-alpine
+FROM node:20.11.1-alpine
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package*.json ./
+
+RUN npm cache clean --force
+RUN npm install --legacy-peer-deps
 
 COPY . .
 
-RUN npm run build
+RUN npx prisma generate
 
 EXPOSE 3333
 
-ENV NODE_ENV=production
-
-CMD ["npm", "run", "start:prod"]
+CMD [  "npm", "run", "start:migrate:prod" ]

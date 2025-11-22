@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate, Link } from 'react-router-dom'
-import { LogIn, Mail, Lock, AlertCircle, ShieldCheck, ShoppingBag } from 'lucide-react'
+import { LogIn, Mail, Lock, AlertCircle } from 'lucide-react'
 import Button from '../components/Button/Button'
 import Card from '../components/Card/Card'
 import { useAuth } from '../context/AuthContext'

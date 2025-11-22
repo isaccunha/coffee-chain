@@ -1,36 +1,40 @@
 import { hash } from 'bcryptjs';
-
-import { PrismaClient } from '../generated/prisma/client';
+import { PrismaClient, Role } from '../generated/prisma/client';
 
 const prisma = new PrismaClient();
 
 async function seed() {
-  console.log('Database seeded');
+  console.log('Starting seed...');
 
-  const userPass = 'pass123';
+  const userPass = await hash('pass123', 8);
 
-  await prisma.user.createMany({
-    data: [
-      {
-        name: 'John Doe',
-        email: 'johndoe@example.com',
-        password: await hash(userPass, 8),
-        role: 'BUYER',
-      },
-      {
-        name: 'Jane Doe',
-        email: 'janedoe@example.com',
-        password: await hash(userPass, 8),
-        role: 'INSPECTOR',
-      },
-    ],
+  await prisma.user.upsert({
+    where: { email: 'johndoe@example.com' },
+    update: {},
+    create: {
+      name: 'John Doe',
+      email: 'johndoe@example.com',
+      password: userPass,
+      role: Role.BUYER,
+    },
   });
+
+  await prisma.user.upsert({
+    where: { email: 'janedoe@example.com' },
+    update: {},
+    create: {
+      name: 'Jane Doe',
+      email: 'janedoe@example.com',
+      password: userPass,
+      role: Role.INSPECTOR,
+    },
+  });
+
+  console.log('Seed complete.');
 }
 
 seed()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
+  .then(() => prisma.$disconnect())
   .catch(async (e) => {
     console.error(e);
     await prisma.$disconnect();

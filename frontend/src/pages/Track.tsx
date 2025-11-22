@@ -38,6 +38,7 @@ const Track = () => {
   const handleGenerateSummary = async () => {
     if (!coffeeData) return
     setSummaryLoading(true)
+    setError(null)
     try {
     const response = await generateSummary({
         farm_name: coffeeData.farm_name,

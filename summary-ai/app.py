@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 OLLAMA_URL = Config.OLLAMA_URL
 OLLAMA_MODEL = Config.OLLAMA_MODEL
-REQUEST_TIMEOUT = 120
+REQUEST_TIMEOUT = 500
 MAX_RETRIES = 2
 RETRY_DELAY = 1
 
@@ -64,6 +64,7 @@ Forneça um resumo em português que inclua:
 Mantenha o resumo conciso e adequado para exibição no frontend."""
     
     if not is_ollama_available():
+        print(1)
         return {
             "success": False,
             "summary": f"{farm_name} - {coffee_bags} from {location}, {processing_method} processed {coffee_variety}.",
@@ -92,6 +93,7 @@ Mantenha o resumo conciso e adequado para exibição no frontend."""
             }
         except requests.exceptions.Timeout:
             if attempt == MAX_RETRIES - 1:
+                print(2)
                 return {
                     "success": False,
                     "summary": f"{farm_name} - {coffee_bags} from {location}, {processing_method} processed {coffee_variety}.",
@@ -100,6 +102,8 @@ Mantenha o resumo conciso e adequado para exibição no frontend."""
                 }
             time.sleep(RETRY_DELAY)
         except requests.exceptions.RequestException as e:
+            print(e)
+            print(3)
             return {
                 "success": False,
                 "summary": f"{farm_name} - {coffee_bags} from {location}, {processing_method} processed {coffee_variety}.",

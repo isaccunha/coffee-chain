@@ -14,6 +14,6 @@ RUN mkdir -p /app/data
 # Declara um volume persistente
 VOLUME ["/app/data"]
 
-EXPOSE 5000
+EXPOSE 5001
 
-CMD ["python", "run.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5001", "run:app"]

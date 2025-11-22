@@ -5,7 +5,7 @@ from config import Config
 class SummaryService:
     def __init__(self):
         self.summary_url = Config.SUMMARY_API_URL
-        self.timeout = 120
+        self.timeout = 500
     
     def summarize_crop(self, crop_data: Dict[str, Any], user_token: str) -> tuple[bool, Optional[Dict[str, Any]], Optional[Dict[str, Any]]]:
         try:

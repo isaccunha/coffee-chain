@@ -220,7 +220,26 @@
             "proof_difficulty": 4
         }
     ],
-    "pending_data": [],
+    "pending_data": [
+        {
+            "id": "safra-25c60f36-72a7-43ff-aa1d-24e61237ff07",
+            "inserted_at": "2025-11-21T22:39:06.509535",
+            "farm_name": "Fazenda J\u00f5ao Feliz",
+            "location": "Lavras",
+            "harvest_date": "2025-11-06",
+            "coffee_variety": "Robusta",
+            "altitude": "960",
+            "coffee_bags": 5456,
+            "processing_method": "washed",
+            "certifications": [
+                {
+                    "name": "Best Coffe"
+                }
+            ],
+            "notes": "Safra boa de mais",
+            "owner": "janedoe@example.com"
+        }
+    ],
     "difficulty": 4,
     "min_batch_size": 2
 }
