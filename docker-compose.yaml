@@ -1,21 +1,54 @@
-version: '3.8'
+# version: '3.8'
 
 services:
+    #
+    # traefik - reverse proxy
+    #
+    traefik:
+        container_name: coffeechain-traefik
+        image: traefik:latest
+        command:
+            - "--api.insecure=false"
+            - "--api.dashboard=true"
+            - "--providers.docker"
+            - "--entrypoints.web.address=:80"
+            - "--entrypoints.dashboard.address=:8080"
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.traefik.entrypoints=dashboard"
+            - "traefik.http.routers.traefik.rule=Host(`localhost`)"
+            - "traefik.http.routers.traefik.service=api@internal"
+            - "traefik.http.routers.traefik.middlewares=traefik-auth"
+            - "traefik.http.middlewares.traefik-auth.basicauth.users=admin:$$apr1$$Rbo8wggU$$0jjfJaiWgQvTPhYoYRJhv."
+        ports:
+            - "80:80"
+            - "8080:8080"
+        volumes:
+            - "/var/run/docker.sock:/var/run/docker.sock:ro"
+        networks:
+            - public
+            - internal
+
+
     #
     # frontend
     #
     frontend:
-        build: ./frontend
+        build: 
+            context: ./frontend
+            args:
+                VITE_GATEWAY_API_URL: http://localhost/api
         container_name: coffeechain-frontend
-        ports:
-            - "3000:80"
-        environment:
-            - GATEWAY_API_URL=http://gateway:5002
-        restart: unless-stopped
+        # ports:
+        #     - "3000:80"
+        labels:
+            - "traefik.http.routers.site.rule=Host(`localhost`)"
+            - "traefik.http.routers.site.entrypoints=web"
         depends_on:
             - gateway
         networks:
-            - public
+            - internal
+
 
     #
     # gateway
@@ -23,8 +56,11 @@ services:
     gateway:
         build: ./gateway
         container_name: coffeechain-gateway
-        ports:
-            - "5002:5002"
+        # ports:
+        #     - "5002:5002"
+        labels:
+            - "traefik.http.routers.api.rule=(Host(`localhost`) && PathPrefix(`/api`))"
+            - "traefik.http.routers.api.entrypoints=web"
         environment:
             - AUTH_API_URL=http://auth-ms:3333
             - BLOCKCHAIN_API_URL=http://blockchain-ms:5001
@@ -37,8 +73,8 @@ services:
             - summary-ai-ms
         restart: unless-stopped
         networks:
-            - public
             - internal
+
 
     #
     # blockchain
@@ -46,8 +82,8 @@ services:
     blockchain-ms:
         build: ./blockchain
         container_name: coffeechain-blockchain-ms
-        ports:
-            - "5001:5001"
+        # ports:
+        #     - "5001:5001"
         environment:
             - FLASK_APP=run.py
             - FLASK_ENV=production
@@ -58,6 +94,7 @@ services:
         networks:
             - internal
 
+
     #
     # auth ms
     #
@@ -66,8 +103,8 @@ services:
         container_name: coffeechain-auth-ms
         environment:
             - DATABASE_URL=postgresql://postgres:postgres@auth-ms-postgres:5432/users?schema=public
-        ports:
-            - "3333:3333"  
+        # ports:
+        #     - "3333:3333"  
         depends_on:
             - auth-ms-postgres  
         networks:
@@ -80,12 +117,13 @@ services:
             - POSTGRES_DB=users
             - POSTGRES_USER=postgres
             - POSTGRES_PASSWORD=postgres
-        ports:
-            - "5432:5432"  
+        # ports:
+        #     - "5432:5432"  
         volumes:
             - postgres_data:/var/lib/postgresql
         networks:
             - internal
+
 
     #
     # summary-ai ms
@@ -93,8 +131,8 @@ services:
     summary-ai-ms:
         build: ./summary-ai
         container_name: coffeechain-summary-ai-ms
-        ports:
-            - "5000:5000"
+        # ports:
+        #     - "5000:5000"
         environment:
             - OLLAMA_URL=http://summary-ai-ms-ollama:11434
             - AUTH_API_URL=http://auth-ms:3333
@@ -109,8 +147,8 @@ services:
     summary-ai-ms-ollama:
         image: ollama/ollama:latest
         container_name: coffeechain-summary-ai-ms-ollama
-        ports:
-            - "11434:11434"
+        # ports:
+        #     - "11434:11434"
         environment:
             - OLLAMA_HOST=0.0.0.0:11434
             - OLLAMA_LOG_LEVEL=info

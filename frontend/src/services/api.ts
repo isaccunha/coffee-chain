@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { CoffeeData, Harvest, Transaction, LoginCredentials, RegisterData, AuthResponse, VerifyTokenResponse } from '../types'
 
-const GATEWAY_API_URL = import.meta.env.GATEWAY_API_URL || 'http://localhost:5002'
+const GATEWAY_API_URL = import.meta.env.VITE_GATEWAY_API_URL || 'http://fallback:5002'
 
 // auth API instance
 const gateway = axios.create({

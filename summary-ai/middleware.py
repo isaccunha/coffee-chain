@@ -93,7 +93,7 @@ def require_role(*allowed_roles):
 
             if user_role not in allowed_roles:
                 return jsonify({
-                    "error": "Forbidden: insufficient role",
+                    "error": f"Forbidden: insufficient role",
                     "code": "INSUFFICIENT_ROLE",
                     "required": allowed_roles,
                     "provided": user_role
