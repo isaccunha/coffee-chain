@@ -104,3 +104,40 @@ def validate_blockchain():
         'success': True,
         'data': result
     }), 200
+
+@safra_bp.route('/logs/creation', methods=['GET'])
+@require_token
+def gateway_get_creation_logs():
+    limit = request.args.get('limit', default=10, type=int)
+    email = request.args.get('email', default=None, type=str)
+
+    success, result, error = blockchain_service.get_creation_logs(user_token=request.token, limit=limit, email=email)
+    if not success:
+        return jsonify({'error': error.get('message', 'Failed to fetch creation logs')}), error.get('status', 500)
+    
+    return jsonify(result), 200
+
+@safra_bp.route('/logs/access', methods=['GET'])
+@require_token
+def gateway_get_access_logs():
+    limit = request.args.get('limit', default=10, type=int)
+    email = request.args.get('email', default=None, type=str)
+
+    success, result, error = blockchain_service.get_access_logs(user_token=request.token, limit=limit, email=email)
+    if not success:
+        return jsonify({'error': error.get('message', 'Failed to fetch access logs')}), error.get('status', 500)
+    
+    return jsonify(result), 200
+
+@safra_bp.route('/user/stats', methods=['GET'])
+@require_token
+def gateway_get_dashboard_stats():
+    success, result, error = blockchain_service.get_user_stats(user_token=request.token)
+
+    if not success:
+        return jsonify({
+            'error': error.get('message', 'Failed to fetch user stats'),
+            'code': 'USER_STATS_FAILED'
+        }), error.get('status', 500)
+    
+    return jsonify(result), 200

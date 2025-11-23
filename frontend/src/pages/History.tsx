@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Clock, MapPin, Package, TrendingUp } from 'lucide-react'
 import Card from '../components/Card/Card'
-import { validateBlockchain } from '../services/api'
+// import { validateBlockchain } from '../services/api'
 import './History.css'
+
+import { getCreationLogs } from '../services/api'
+import { formatDateBR } from '../utils/date'
 
 const History = () => {
   const [transactions, setTransactions] = useState<any[]>([])
@@ -14,86 +17,42 @@ const History = () => {
     verifiedPercent: 0
   })
 
-  useEffect(() => {
+    useEffect(() => {
     const fetchData = async () => {
-      try {
-        const token = localStorage.getItem('token')
-        if (!token) {
-          return
-        }
+        try {
+        const data = await getCreationLogs(100) // buscar últimos 100 logs \
+        const logsList = data?.logs || []
 
-        // Fetch transactions from blockchain validation
-        const validationData = await validateBlockchain()
-        const transactionsList = validationData?.data?.transactions || []
-        
-        setTransactions(transactionsList)
+        setTransactions(
+            logsList.map((log: any) => ({
+            id: log.harvest_id,
+            type: 'Registro',
+            farm: log.farm_name,
+            location: log.location,
+            date: log.created_at,
+            quantity: log.coffee_bags,
+            status: log.verified_at ? 'Verificado' : 'Pendente'
+            }))
+        )
 
-        // Calculate stats
-        if (transactionsList.length > 0) {
-          const totalBags = transactionsList.reduce((sum: number, t: any) => {
-            const bags = parseInt(t.quantity || '0') || 0
-            return sum + bags
-          }, 0)
+        // calcular estatísticas
+        const totalBags = logsList.reduce((sum: number, l: any) => sum + (l.coffee_bags || 0), 0)
+        const farms = new Set(logsList.map((l: any) => l.farm_name))
+        const verified = logsList.filter((l: any) => l.verified_at).length
 
-          const farms = new Set(transactionsList.map((t: any) => t.farm))
-          
-          const verified = transactionsList.filter((t: any) => 
-            t.status === 'Verificado' || t.status === 'verified'
-          ).length
-
-          setStats({
+        setStats({
             totalBags,
-            totalTransactions: transactionsList.length,
+            totalTransactions: logsList.length,
             totalFarms: farms.size,
-            verifiedPercent: transactionsList.length > 0 ? 
-              Math.round((verified / transactionsList.length) * 100) : 0
-          })
+            verifiedPercent: logsList.length > 0 ? Math.round((verified / logsList.length) * 100) : 0
+        })
+        } catch (err) {
+            console.error(err)
         }
-      } catch (err: any) {
-        // Fallback to mock data if API fails
-        setTransactions([
-          {
-            id: 1,
-            type: 'Registro',
-            farm: 'Fazenda Santa Clara',
-            location: 'Sul de Minas Gerais',
-            date: '15/10/2024',
-            quantity: '100',
-            status: 'Verificado'
-          },
-          {
-            id: 2,
-            type: 'Processamento',
-            farm: 'Fazenda Boa Vista',
-            location: 'Cerrado Mineiro',
-            date: '12/10/2024',
-            quantity: '80',
-            status: 'Em andamento'
-          },
-          {
-            id: 3,
-            type: 'Registro',
-            farm: 'Sítio Verde',
-            location: 'Mogiana',
-            date: '10/10/2024',
-            quantity: '50',
-            status: 'Verificado'
-          },
-          {
-            id: 4,
-            type: 'Colheita',
-            farm: 'Fazenda Esperança',
-            location: 'Sul de Minas',
-            date: '08/10/2024',
-            quantity: '120',
-            status: 'Verificado'
-          }
-        ])
-      }
     }
 
     fetchData()
-  }, [])
+    }, [])
 
   return (
     <div className="history">
@@ -104,8 +63,8 @@ const History = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1>Histórico Blockchain</h1>
-            <p>Todas as transações registradas e verificadas</p>
+            <h1>Registro Histórico de Safras</h1>
+            <p>Todas as inserções registradas e verificadas na blockchain</p>
           </motion.div>
         </div>
       </section>
@@ -133,15 +92,6 @@ const History = () => {
             </Card>
             <Card>
               <div className="stat-card">
-                <MapPin className="stat-card__icon" size={32} />
-                <div className="stat-card__content">
-                  <div className="stat-card__value">{stats.totalFarms}</div>
-                  <div className="stat-card__label">Fazendas</div>
-                </div>
-              </div>
-            </Card>
-            <Card>
-              <div className="stat-card">
                 <TrendingUp className="stat-card__icon" size={32} />
                 <div className="stat-card__content">
                   <div className="stat-card__value">{stats.verifiedPercent}%</div>
@@ -152,7 +102,7 @@ const History = () => {
           </div>
 
           <div className="history-timeline">
-            <h2>Transações Recentes</h2>
+            <h2>Registros na Blockchain</h2>
             <div className="timeline">
               {transactions.map((transaction, index) => (
                 <motion.div
@@ -170,6 +120,9 @@ const History = () => {
                       </div>
                     </div>
                     <h3 className="transaction-card__title">{transaction.farm}</h3>
+                    <p className="transaction-card__harvest-id">{transaction.id}</p> 
+                    
+                    
                     <div className="transaction-card__info">
                       <div className="transaction-info-item">
                         <MapPin size={16} />
@@ -177,7 +130,7 @@ const History = () => {
                       </div>
                       <div className="transaction-info-item">
                         <Clock size={16} />
-                        <span>{transaction.date}</span>
+                        <span>{formatDateBR(transaction.date)}</span>
                       </div>
                       <div className="transaction-info-item">
                         <Package size={16} />

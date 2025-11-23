@@ -112,3 +112,71 @@ class BlockchainService:
             return False, None, {'message': f'Blockchain service error: {str(e)}', 'status': 503}
         except Exception as e:
             return False, None, {'message': f'Unexpected error: {str(e)}', 'status': 500}
+        
+    def get_creation_logs(self, user_token: str, limit: int = 10, email: str | None = None) -> tuple[bool, Optional[Dict], Optional[Dict]]:
+        try:
+            headers = {'Authorization': f"Bearer {user_token}", 'Content-Type': 'application/json'}
+            params = {'limit': limit}
+            if email:
+                params['email'] = email
+
+            response = requests.get(
+                f'{Config.BLOCKCHAIN_API_URL}/logs/creation',
+                headers=headers,
+                params=params,
+                timeout=self.timeout
+            )
+
+            if response.status_code == 200:
+                return True, response.json(), None
+            else:
+                return False, None, {'message': response.json().get('error', 'Failed to get creation logs'), 'status': response.status_code}
+        except requests.exceptions.Timeout:
+            return False, None, {'message': 'Blockchain service timeout', 'status': 503}
+        except Exception as e:
+            return False, None, {'message': f'Unexpected error: {str(e)}', 'status': 500}
+
+
+    def get_access_logs(self, user_token: str, limit: int = 10, email: str | None = None) -> tuple[bool, Optional[Dict], Optional[Dict]]:
+        try:
+            headers = {'Authorization': f"Bearer {user_token}", 'Content-Type': 'application/json'}
+            params = {'limit': limit}
+            if email:
+                params['email'] = email
+
+            response = requests.get(
+                f'{Config.BLOCKCHAIN_API_URL}/logs/access',
+                headers=headers,
+                params=params,
+                timeout=self.timeout
+            )
+
+            if response.status_code == 200:
+                return True, response.json(), None
+            else:
+                return False, None, {'message': response.json().get('error', 'Failed to get access logs'), 'status': response.status_code}
+        except requests.exceptions.Timeout:
+            return False, None, {'message': 'Blockchain service timeout', 'status': 503}
+        except Exception as e:
+            return False, None, {'message': f'Unexpected error: {str(e)}', 'status': 500}
+
+    def get_user_stats(self, user_token: str) -> tuple[bool, Optional[Dict], Optional[Dict]]:
+        try:
+            headers = {'Authorization': f"Bearer {user_token}", 'Content-Type': 'application/json'}
+            response = requests.get(
+                f'{Config.BLOCKCHAIN_API_URL}/user/stats',
+                headers=headers,
+                timeout=self.timeout
+            )
+
+            if response.status_code == 200:
+                return True, response.json(), None
+            else:
+                return False, None, {
+                    'message': response.json().get('error', 'Failed to get user stats'),
+                    'status': response.status_code
+                }
+        except requests.exceptions.Timeout:
+            return False, None, {'message': 'Blockchain service timeout', 'status': 503}
+        except Exception as e:
+            return False, None, {'message': f'Unexpected error: {str(e)}', 'status': 500}

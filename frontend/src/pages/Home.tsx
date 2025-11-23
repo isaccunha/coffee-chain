@@ -135,7 +135,7 @@ const Home = () => {
       </section>
 
       {/* Modes Section */}
-      <section className="section modes">
+      {/* <section className="section modes">
         <div className="container">
           <motion.div
             className="modes__header"
@@ -168,7 +168,7 @@ const Home = () => {
             </Card>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* How it Works */}
       <section className="section how-it-works">

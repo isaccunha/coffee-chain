@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
+import { formatDistanceToNow, parseISO, addHours } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import { 
   ShoppingBag, 
   ShieldCheck, 
@@ -7,39 +9,38 @@ import {
   FileCheck, 
   History, 
   TrendingUp,
-  CheckCircle,
   Clock,
-  AlertCircle
+  Package
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import Card from '../components/Card/Card'
 import Button from '../components/Button/Button'
 import './Dashboard.css'
 
+import { useEffect, useState } from 'react'
+import { getCreationLogs, getAccessLogs, getUserStats } from '../services/api'
+
+
 const Dashboard = () => {
   const { user } = useAuth()
   const navigate = useNavigate()
 
-  // Mock data - replace with real data from API
-  const inspectorStats = {
-    pendingInspections: 8,
-    completedToday: 5,
-    totalInspections: 156,
-    flaggedItems: 2
-  }
+  const [creationLogs, setCreationLogs] = useState<any[]>([])
+  const [accessLogs, setAccessLogs] = useState<any[]>([])
+  const [stats, setStats] = useState<any>(null)
 
-  const recentActivity = {
-    buyer: [
-      { id: 1, action: 'Consulta de lote', detail: 'Fazenda Santa Rita - Lote #2401', time: '2 horas atrás' },
-      { id: 2, action: 'Solicitação aprovada', detail: 'Safra 2024 - Bourbon Amarelo', time: '5 horas atrás' },
-      { id: 3, action: 'Nova busca salva', detail: 'Cafés de altitude > 1200m', time: '1 dia atrás' }
-    ],
-    inspector: [
-      { id: 1, action: 'Inspeção concluída', detail: 'Fazenda Boa Vista - Lote #3201', time: '1 hora atrás' },
-      { id: 2, action: 'Certificação emitida', detail: 'Safra 2024 - Catuaí Vermelho', time: '3 horas atrás' },
-      { id: 3, action: 'Revisão solicitada', detail: 'Fazenda Primavera - Lote #2805', time: '6 horas atrás' }
-    ]
-  }
+  useEffect(() => {
+    if (user?.role === 'INSPECTOR') {
+        getCreationLogs(5, user.email).then(data => setCreationLogs(data.logs))
+    }
+
+    if (user?.role === 'BUYER') {
+        getAccessLogs(5, user.email).then(data => setAccessLogs(data.logs))
+    }
+
+    getUserStats().then(data => setStats(data))
+  }, [user])
+
 
   if (user?.role === 'BUYER') {
     return (
@@ -62,45 +63,27 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Stats Grid
+          
             <div className="dashboard__stats">
               <Card>
                 <div className="stat-card">
-                  <Package className="stat-card__icon stat-card__icon--primary" size={28} />
+                  <Package className="stat-card__icon stat-card__icon--success" size={28} />
                   <div className="stat-card__content">
-                    <span className="stat-card__value">{buyerStats.activePurchases}</span>
-                    <span className="stat-card__label">Compras Ativas</span>
+                    <span className="stat-card__value">{stats?.total_accesses ?? 0}</span>
+                    <span className="stat-card__label">Total de Consultas</span>
                   </div>
                 </div>
               </Card>
               <Card>
                 <div className="stat-card">
-                  <Clock className="stat-card__icon stat-card__icon--warning" size={28} />
+                  <Clock className="stat-card__icon stat-card__icon--info" size={28} />
                   <div className="stat-card__content">
-                    <span className="stat-card__value">{buyerStats.pendingApprovals}</span>
-                    <span className="stat-card__label">Aprovações Pendentes</span>
+                    <span className="stat-card__value">{stats?.accesses_today ?? 0}</span>
+                    <span className="stat-card__label">Consultas hoje</span>
                   </div>
                 </div>
               </Card>
-              <Card>
-                <div className="stat-card">
-                  <CheckCircle className="stat-card__icon stat-card__icon--success" size={28} />
-                  <div className="stat-card__content">
-                    <span className="stat-card__value">{buyerStats.completedOrders}</span>
-                    <span className="stat-card__label">Pedidos Completos</span>
-                  </div>
-                </div>
-              </Card>
-              <Card>
-                <div className="stat-card">
-                  <Search className="stat-card__icon stat-card__icon--info" size={28} />
-                  <div className="stat-card__content">
-                    <span className="stat-card__value">{buyerStats.savedSearches}</span>
-                    <span className="stat-card__label">Buscas Salvas</span>
-                  </div>
-                </div>
-              </Card>
-            </div> */}
+            </div> 
 
             {/* Quick Actions */}
             <div className="dashboard__section">
@@ -125,26 +108,41 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Recent Activity */}
-            {/* <div className="dashboard__section">
+          
+            <div className="dashboard__section">
               <h2>Atividade Recente</h2>
               <Card>
                 <div className="activity-list">
-                  {recentActivity.buyer.map(activity => (
+                    {accessLogs.length > 0 ? (
+                    accessLogs.map(activity => (
                     <div key={activity.id} className="activity-item">
-                      <div className="activity-item__icon">
+                        <div className="activity-item__icon">
                         <TrendingUp size={18} />
-                      </div>
-                      <div className="activity-item__content">
-                        <strong>{activity.action}</strong>
-                        <p>{activity.detail}</p>
-                        <span className="activity-item__time">{activity.time}</span>
-                      </div>
+                        </div>
+                        <div className="activity-item__content">
+                        <strong>Consulta de lote</strong>
+                        <p>{activity.farm_name} - {activity.harvest_id}</p>
+                        <span className="activity-item__time">
+                        {activity.accessed_at
+                            ? formatDistanceToNow(
+                                addHours(parseISO(activity.accessed_at), -3), 
+                                { addSuffix: false, locale: ptBR }
+                            )
+                            : ''}
+                        </span>
+                        </div>
                     </div>
-                  ))}
+                    ))
+                ) : (
+                    <div className="activity-item activity-item--empty">
+                    <div className="activity-item__content">
+                        Nenhuma atividade recente por enquanto.
+                    </div>
+                    </div>
+                )}
                 </div>
               </Card>
-            </div> */}
+            </div> 
           </motion.div>
         </div>
       </div>
@@ -176,37 +174,19 @@ const Dashboard = () => {
           <div className="dashboard__stats">
             <Card>
               <div className="stat-card">
-                <Clock className="stat-card__icon stat-card__icon--warning" size={28} />
-                <div className="stat-card__content">
-                  <span className="stat-card__value">{inspectorStats.pendingInspections}</span>
-                  <span className="stat-card__label">Inspeções Pendentes</span>
-                </div>
-              </div>
-            </Card>
-            <Card>
-              <div className="stat-card">
-                <CheckCircle className="stat-card__icon stat-card__icon--success" size={28} />
-                <div className="stat-card__content">
-                  <span className="stat-card__value">{inspectorStats.completedToday}</span>
-                  <span className="stat-card__label">Concluídas Hoje</span>
-                </div>
-              </div>
-            </Card>
-            <Card>
-              <div className="stat-card">
                 <FileCheck className="stat-card__icon stat-card__icon--primary" size={28} />
                 <div className="stat-card__content">
-                  <span className="stat-card__value">{inspectorStats.totalInspections}</span>
+                  <span className="stat-card__value">{stats?.total_inspections ?? 0}</span>
                   <span className="stat-card__label">Total de Inspeções</span>
                 </div>
               </div>
             </Card>
             <Card>
               <div className="stat-card">
-                <AlertCircle className="stat-card__icon stat-card__icon--danger" size={28} />
+                <Clock className="stat-card__icon stat-card__icon--warning" size={28} />
                 <div className="stat-card__content">
-                  <span className="stat-card__value">{inspectorStats.flaggedItems}</span>
-                  <span className="stat-card__label">Itens Sinalizados</span>
+                  <span className="stat-card__value">{stats?.pending_inspections ?? 0}</span>
+                  <span className="stat-card__label">Inspeções Pendentes</span>
                 </div>
               </div>
             </Card>
@@ -235,26 +215,41 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Recent Activity */}
-          {/* <div className="dashboard__section">
+      
+          <div className="dashboard__section">
             <h2>Atividade Recente</h2>
-            <Card>
-              <div className="activity-list">
-                {recentActivity.inspector.map(activity => (
-                  <div key={activity.id} className="activity-item">
-                    <div className="activity-item__icon">
-                      <ShieldCheck size={18} />
+                <Card>
+                <div className="activity-list">
+                    {creationLogs.length > 0 ? (
+                    creationLogs.map(activity => (
+                    <div key={activity.id} className="activity-item">
+                        <div className="activity-item__icon">
+                        <TrendingUp size={18} />
+                        </div>
+                        <div className="activity-item__content">
+                        <strong>Inspeção concluída</strong>
+                        <p>{activity.farm_name} - {activity.harvest_id}</p>
+                        <span className="activity-item__time">
+                        {activity.created_at
+                            ? formatDistanceToNow(
+                                addHours(parseISO(activity.created_at), -3), 
+                                { addSuffix: false, locale: ptBR }
+                            )
+                            : ''}
+                        </span>
+                        </div>
                     </div>
+                    ))
+                ) : (
+                    <div className="activity-item activity-item--empty">
                     <div className="activity-item__content">
-                      <strong>{activity.action}</strong>
-                      <p>{activity.detail}</p>
-                      <span className="activity-item__time">{activity.time}</span>
+                        Nenhuma atividade recente por enquanto.
                     </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          </div> */}
+                    </div>
+                )}
+                </div>
+              </Card>
+          </div> 
         </motion.div>
       </div>
     </div>

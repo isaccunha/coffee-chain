@@ -88,9 +88,25 @@ services:
             - FLASK_APP=run.py
             - FLASK_ENV=production
             - AUTH_API_URL=http://auth-ms:3333
+            - DB_HOST=blockchain-ms-postgres
+            - DB_PORT=5432
         volumes:
             - blockchain_data:/app/data
         restart: unless-stopped
+        networks:
+            - internal
+
+    blockchain-ms-postgres:
+        image: postgres:latest  
+        container_name: coffeechain-blockchain-ms-postgres
+        environment:
+            - POSTGRES_DB=blockchain
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+        # ports:
+        #     - "5433:5432"  
+        volumes:
+            - blockchain_postgres_data:/var/lib/postgresql
         networks:
             - internal
 
@@ -117,10 +133,10 @@ services:
             - POSTGRES_DB=users
             - POSTGRES_USER=postgres
             - POSTGRES_PASSWORD=postgres
-        ports:
-            - "5432:5432"  
+        # ports:
+        #     - "5432:5432"  
         volumes:
-            - postgres_data:/var/lib/postgresql
+            - auth_postgres_data:/var/lib/postgresql
         networks:
             - internal
 
@@ -147,8 +163,8 @@ services:
     summary-ai-ms-ollama:
         image: ollama/ollama:latest
         container_name: coffeechain-summary-ai-ms-ollama
-        ports:
-            - "11434:11434"
+        # ports:
+        #     - "11434:11434"
         environment:
             - OLLAMA_HOST=0.0.0.0:11434
             - OLLAMA_LOG_LEVEL=info
@@ -181,8 +197,9 @@ services:
 
 volumes:
     ollama_data:
-    postgres_data:
+    auth_postgres_data:
     blockchain_data:
+    blockchain_postgres_data:
 
 networks:
     public:

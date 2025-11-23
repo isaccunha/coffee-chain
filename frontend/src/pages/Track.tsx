@@ -81,7 +81,7 @@ const Track = () => {
             transition={{ duration: 0.6 }}
           >
             <h1>Rastreie seu Café</h1>
-            <p>Descubra a história completa por trás da sua xícara</p>
+            <p>Descubra a origem e o percurso da safra de café</p>
           </motion.div>
         </div>
       </section>
@@ -91,13 +91,13 @@ const Track = () => {
           <Card className="track-search">
             <div className="track-search__content">
               <h2>Digite o código de rastreamento</h2>
-              <p>Encontre o código na embalagem do seu café</p>
+              <p>Utilize o código da safra do café para realizar a busca</p>
               <div className="track-search__input-group">
                 <div className="track-search__input-wrapper">
                   <Search className="track-search__icon" size={20} />
                   <input
                     type="text"
-                    placeholder="Ex: CFE-2024-001234"
+                    placeholder="Ex: safra-f59e2911-e9c3-4082-ad47-139feae949b0"
                     value={trackingCode}
                     onChange={(e) => setTrackingCode(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleTrack()}
