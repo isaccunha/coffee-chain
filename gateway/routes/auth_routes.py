@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from middleware import require_json
 from services.auth_service import AuthService
-from validators import AuthLoginRequest, validate_request_body, get_validation_error_response
+from validators import AuthLoginRequest, AuthRegisterRequest, validate_request_body, get_validation_error_response
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 auth_service = AuthService()
@@ -68,4 +68,33 @@ def verify_token():
     return jsonify({
         'success': True,
         'user': user_data
+    }), 200
+
+@auth_bp.route('/register', methods=['POST'])
+@require_json
+def register():
+    data = request.get_json()
+    
+    if not data:
+        return jsonify({
+            'error': 'Request body is required',
+            'code': 'EMPTY_BODY'
+        }), 400
+    
+    is_valid, validated_data, errors = validate_request_body(data, AuthRegisterRequest)
+    
+    if not is_valid:
+        return jsonify(get_validation_error_response(errors)), 400
+    
+    success, data, error = auth_service.register(validated_data.name, validated_data.email, validated_data.password)
+    if not success:
+        status_code = error.get('status', 500)
+        return jsonify({
+            'error': error.get('message', 'Registration failed'),
+            'code': 'REGISTRATION_FAILED'
+        }), status_code
+    
+    return jsonify({
+        'success': True,
+        'token': data["token"]
     }), 200

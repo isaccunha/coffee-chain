@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, Trash2, Download, CheckCircle, Shield } from 'lucide-react'
+import jsPDF from "jspdf"
+import { Plus, Trash2, Download, CheckCircle, Shield, Copy } from 'lucide-react'
 import Button from '../components/Button/Button'
 import Card from '../components/Card/Card'
 import { createSafra, validateBlockchain } from '../services/api'
@@ -52,33 +53,55 @@ export default function Fiscal() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<Message | null>(null)
   const [successResult, setSuccessResult] = useState<SuccessResult | null>(null)
+  const [lastSuccessResult, setLastSuccessResult] = useState<SuccessResult | null>(null)
   const [validationModal, setValidationModal] = useState<ValidationModalData | null>(null)
+  const [showMiniSuccess, setShowMiniSuccess] = useState(false)
 
   const showMessage = (type: Message['type'], text: string) => {
     setMessage({ type, text })
     setTimeout(() => setMessage(null), 4000)
   }
 
-  const downloadSafraData = () => {
-    if (!successResult) return
+    const downloadSafraPDF = () => {
+      const result = successResult ?? lastSuccessResult
+      if (!result) return
 
-    const dataToDownload = {
-      id: successResult.id,
-      timestamp: successResult.timestamp,
-      safraData: successResult.formData,
+      const doc = new jsPDF()
+
+      doc.setFontSize(18)
+      doc.text("Relatório da safra", 10, 15)
+
+      doc.setFontSize(12)
+      doc.text(`ID: ${result.id}`, 10, 30)
+      doc.text(`Registrado em: ${result.timestamp}`, 10, 40)
+
+      const d = result.formData
+
+    doc.text("• Fazenda: " + d.farm_name, 10, 60)
+    doc.text("• Localização: " + d.location, 10, 70)
+    doc.text("• Data da Colheita: " + d.harvest_date, 10, 80)
+    doc.text("• Variedade: " + d.coffee_variety, 10, 90)
+    doc.text("• Altitude: " + d.altitude + "m", 10, 100)
+    doc.text("• Sacas: " + d.coffee_bags, 10, 110)
+    doc.text("• Método de Processamento: " + d.processing_method, 10, 120)
+
+    // Certificações, se houver
+    if (d.certifications.length > 0) {
+        doc.text("Certificações:", 10, 140)
+        d.certifications.forEach((c, index) => {
+        doc.text(`- ${c.name}`, 15, 150 + index * 10)
+        })
     }
 
-    const jsonString = JSON.stringify(dataToDownload, null, 2)
-    const blob = new Blob([jsonString], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `safra_${successResult.id}_${new Date().getTime()}.json`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-  }
+    // Notas
+    if (d.notes) {
+        doc.text("Notas:", 10, 180)
+        doc.text(d.notes, 15, 190)
+    }
+
+  doc.save(`safra_${result.id}.pdf`)
+    }
+    
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -132,10 +155,6 @@ export default function Fiscal() {
     }
     if (!formData.processing_method.trim()) {
       showMessage('error', 'Processing method é obrigatório')
-      return false
-    }
-    if (!formData.notes.trim()) {
-      showMessage('error', 'Notes é obrigatório')
       return false
     }
     return true
@@ -197,6 +216,50 @@ export default function Fiscal() {
 
   return (
     <div className="fiscal-container">
+        {showMiniSuccess && lastSuccessResult && (
+        <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mini-success-box"
+        >
+            <div className="mini-success-content">
+            <h4>Safra registrada!</h4>
+            <p className="mini-success-id">ID: <strong>{lastSuccessResult.id}</strong>
+              <button
+                type="button"
+                className="mini-copy-btn"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(lastSuccessResult.id)
+                    showMessage('success', 'ID copiado para a área de transferência')
+                  } catch (e) {
+                    // fallback
+                    const ta = document.createElement('textarea')
+                    ta.value = lastSuccessResult.id
+                    document.body.appendChild(ta)
+                    ta.select()
+                    try { document.execCommand('copy') } catch {}
+                    document.body.removeChild(ta)
+                    showMessage('success', 'ID copiado para a área de transferência')
+                  }
+                }}
+                aria-label="Copiar ID"
+              >
+                <Copy size={14} />
+              </button>
+            </p>
+
+            <Button
+                onClick={downloadSafraPDF}
+                variant="primary"
+            >
+                <Download size={16} />
+                Baixar PDF
+            </Button>
+            </div>
+        </motion.div>
+    )}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -224,7 +287,7 @@ export default function Fiscal() {
 
               <div className="form-grid">
                 <div className="form-group">
-                  <label htmlFor="farm_name">Farm Name *</label>
+                  <label htmlFor="farm_name">Nome da fazenda *</label>
                   <input
                     type="text"
                     id="farm_name"
@@ -237,7 +300,7 @@ export default function Fiscal() {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="location">Location *</label>
+                  <label htmlFor="location">Localização *</label>
                   <input
                     type="text"
                     id="location"
@@ -250,7 +313,7 @@ export default function Fiscal() {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="harvest_date">Harvest Date *</label>
+                  <label htmlFor="harvest_date">Data da colheita *</label>
                   <input
                     type="date"
                     id="harvest_date"
@@ -262,7 +325,7 @@ export default function Fiscal() {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="coffee_variety">Coffee Variety *</label>
+                  <label htmlFor="coffee_variety">Variedade do café *</label>
                   <input
                     type="text"
                     id="coffee_variety"
@@ -288,7 +351,7 @@ export default function Fiscal() {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="coffee_bags">Coffee Bags *</label>
+                  <label htmlFor="coffee_bags">Quantidade de sacas *</label>
                   <input
                     type="number"
                     id="coffee_bags"
@@ -302,7 +365,7 @@ export default function Fiscal() {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="processing_method">Processing Method *</label>
+                  <label htmlFor="processing_method">Método de processamento *</label>
                   <select
                     id="processing_method"
                     name="processing_method"
@@ -312,15 +375,16 @@ export default function Fiscal() {
                   >
                     <option value="">Selecione um método</option>
                     <option value="natural">Natural</option>
-                    <option value="washed">Washed</option>
-                    <option value="pulped-natural">Pulped Natural</option>
-                    <option value="fermented">Fermented</option>
+                    <option value="lavado">Lavado</option>
+                    <option value="semi-lavado">Semi-lavado</option>
+                    <option value="fermentado">Fermentado</option>
+                    <option value="outro">Outro</option>
                   </select>
                 </div>
               </div>
 
               <div className="form-group full-width">
-                <label htmlFor="notes">Notes *</label>
+                <label htmlFor="notes">Notas adicionais (Opcional)</label>
                 <textarea
                   id="notes"
                   name="notes"
@@ -334,13 +398,13 @@ export default function Fiscal() {
             </div>
 
             <div className="form-section">
-              <h2>Certificações</h2>
+              <h2>Certificações (Opcional)</h2>
               <div className="certifications-input">
                 <input
                   type="text"
                   value={certificationInput}
                   onChange={(e) => setCertificationInput(e.target.value)}
-                  placeholder="Ex: Orgânico, Fair Trade, RainForest Alliance"
+                  placeholder="Digite o link da certificação. Ex: https://www.ibd.com.br"
                   disabled={loading}
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
@@ -386,7 +450,7 @@ export default function Fiscal() {
 
             <div className="form-actions">
               <Button type="submit" disabled={loading}>
-                {loading ? 'Salvando...' : '💾 Salvar Safra'}
+                {loading ? 'Salvando...' : 'Salvar Safra'}
               </Button>
               <Button
                 type="button"
@@ -394,7 +458,7 @@ export default function Fiscal() {
                 disabled={loading}
                 variant="secondary"
               >
-                {loading ? 'Validando...' : '✓ Validar Blockchain'}
+                {loading ? 'Validando...' : 'Validar Blockchain'}
               </Button>
             </div>
           </form>
@@ -409,9 +473,12 @@ export default function Fiscal() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
           className="success-overlay"
-          onClick={() => {
-            setSuccessResult(null)
-            document.body.style.overflow = 'auto'
+      onClick={() => {
+        // move the current success result to lastSuccessResult so the mini card can show after closing
+        setLastSuccessResult(successResult)
+        setSuccessResult(null)
+        document.body.style.overflow = 'auto'
+        setShowMiniSuccess(true)
           }}
         >
           <motion.div
@@ -426,8 +493,10 @@ export default function Fiscal() {
               <button
                 className="success-modal__close-btn"
                 onClick={() => {
+                  setLastSuccessResult(successResult)
                   setSuccessResult(null)
                   document.body.style.overflow = 'auto'
+                  setShowMiniSuccess(true)
                 }}
                 aria-label="Fechar modal"
               >
@@ -449,7 +518,30 @@ export default function Fiscal() {
                 <h2 className="success-modal__title">Safra Registrada com Sucesso!</h2>
                 <div className="success-modal__id-box">
                   <p className="success-modal__id-label">ID da Safra</p>
-                  <p className="success-modal__id-value">{successResult.id}</p>
+                  <p className="success-modal__id-value">
+                    {successResult.id}
+                    <button
+                      type="button"
+                      className="success-copy-btn"
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(successResult.id)
+                          showMessage('success', 'ID copiado para a área de transferência')
+                        } catch (e) {
+                          const ta = document.createElement('textarea')
+                          ta.value = successResult.id
+                          document.body.appendChild(ta)
+                          ta.select()
+                          try { document.execCommand('copy') } catch {}
+                          document.body.removeChild(ta)
+                          showMessage('success', 'ID copiado para a área de transferência')
+                        }
+                      }}
+                      aria-label="Copiar ID"
+                    >
+                      <Copy size={16} />
+                    </button>
+                  </p>
                 </div>
               </div>
 
@@ -458,7 +550,7 @@ export default function Fiscal() {
 
             <div className="success-modal__content">
               <div className="success-details">
-                <h3 className="success-details__title">📋 Resumo da Safra</h3>
+                <h3 className="success-details__title">Resumo da Safra</h3>
                 <div className="details-grid">
                   <motion.div className="detail-item" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
                     <label>Fazenda</label>
@@ -518,7 +610,7 @@ export default function Fiscal() {
 
                 {successResult.formData.notes && (
                   <motion.div className="notes-section" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}>
-                    <label className="notes-label">📝 Notas Adicionais</label>
+                    <label className="notes-label">Notas Adicionais</label>
                     <p>{successResult.formData.notes}</p>
                   </motion.div>
                 )}
@@ -527,20 +619,11 @@ export default function Fiscal() {
 
             <div className="success-modal__actions">
               <Button
-                onClick={downloadSafraData}
+                onClick={downloadSafraPDF}
                 variant="primary"
               >
                 <Download size={18} />
-                Baixar JSON
-              </Button>
-              <Button
-                onClick={() => {
-                  setSuccessResult(null)
-                  document.body.style.overflow = 'auto'
-                }}
-                variant="secondary"
-              >
-                Fechar
+                Baixar em formato PDF
               </Button>
             </div>
           </motion.div>

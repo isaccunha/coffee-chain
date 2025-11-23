@@ -6,7 +6,6 @@ import uuid
 # Timezone fixo de Brasília
 BRASILIA_TZ = datetime.timezone(datetime.timedelta(hours=-3))
 
-
 class Blockchain:
     def __init__(self, loaded_state=None):
         # Valores padrão caso não exista estado salvo
@@ -26,9 +25,7 @@ class Blockchain:
         if not self.chain:
             self.create_block(proof=1, previous_hash="0")
 
-    # ---------------------------------------------------------
     # CRIAÇÃO DE BLOCO
-    # ---------------------------------------------------------
     def create_block(self, proof, previous_hash):
         block = {
             "index": len(self.chain) + 1,
@@ -65,9 +62,7 @@ class Blockchain:
         self.pending_data.append(data_with_id)
         return data_with_id
 
-    # ---------------------------------------------------------
     # PROOF OF WORK
-    # ---------------------------------------------------------
     def proof_of_work(self, previous_proof, previous_hash):
         new_proof = 1
         target = "0" * self.difficulty
@@ -87,18 +82,14 @@ class Blockchain:
         encoded = json.dumps(block, sort_keys=True).encode()
         return hashlib.sha256(encoded).hexdigest()
 
-    # ---------------------------------------------------------
     # MINERAÇÃO
-    # ---------------------------------------------------------
     def mine_block(self):
         previous = self.print_previous_block()
         prev_hash = self.hash(previous)
         proof = self.proof_of_work(previous["proof"], prev_hash)
         return self.create_block(proof, prev_hash)
 
-    # ---------------------------------------------------------
     # VALIDAÇÃO
-    # ---------------------------------------------------------
     def chain_valid(self, chain):
         if not chain:
             return False
@@ -131,9 +122,7 @@ class Blockchain:
 
         return True
 
-    # ---------------------------------------------------------
     # EXPORTAR ESTADO COMPLETO
-    # ---------------------------------------------------------
     def export_state(self):
         # Usado para salvar tudo no state.json
         return {

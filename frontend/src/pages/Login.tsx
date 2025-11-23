@@ -24,7 +24,7 @@ const Login = () => {
       await login({ email, password })
       navigate('/')
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao fazer login. Verifique suas credenciais.')
+      setError(err.response?.data?.error || 'Erro ao fazer login. Verifique suas credenciais.')
     } finally {
       setIsLoading(false)
     }

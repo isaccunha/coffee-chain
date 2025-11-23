@@ -22,6 +22,12 @@ gateway.interceptors.request.use((config) => {
 
 // handle auth errors for all APIs
 const handleAuthError = (error: any) => {
+  const originalRequest = error.config
+
+  if (originalRequest?.url?.includes('/auth/login')) {
+    return Promise.reject(error)
+  }
+
   if (error.response?.status === 401) {
     localStorage.removeItem('token')
     window.location.href = '/login'
@@ -132,8 +138,26 @@ export const getHarvestById = async (id: number): Promise<CoffeeData> => {
 }
 
 // blockchain API - gateway safra validation
+export const getCreationLogs = async (limit = 10, email?: string) => {
+  const params: any = { limit }
+  if (email) params.email = email
+  const response = await gateway.get('/safra/logs/creation', { params })
+  return response.data
+}
+
+export const getAccessLogs = async (limit = 10, email?: string) => {
+  const params: any = { limit }
+  if (email) params.email = email
+  const response = await gateway.get('/safra/logs/access', { params })
+  return response.data
+}
+
+export const getUserStats = async () => {
+  const response = await gateway.get('/safra/user/stats', {  })
+  return response.data
+}
+
 export const getTransactions = async (): Promise<Transaction[]> => {
-  // Would fetch from blockchain service or history endpoint
   try {
     const data = await validateBlockchain()
     return data?.data?.transactions || []
@@ -152,7 +176,6 @@ export const verifyBlockchainHash = async (hash: string): Promise<boolean> => {
 }
 
 // summary AI API - via gateway
-// safra-29a4f8ac-29d3-4307-ada0-bd72ee45773b
 export const generateSummary = async (harvestData: any): Promise<string> => {
   const response = await gateway.post('/summary', harvestData)
 
@@ -170,8 +193,8 @@ export const login = async (credentials: LoginCredentials): Promise<AuthResponse
 }
 
 export const register = async (_data: RegisterData): Promise<AuthResponse> => {
-  // ! backend doesn't have register endpoint yet. throw error?
-  throw new Error('registration endpoint not implemented')
+  const response = await gateway.post('/auth/register', _data)
+  return response.data
 }
 
 export const getCurrentUser = async (): Promise<VerifyTokenResponse> => {

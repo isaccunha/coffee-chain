@@ -154,6 +154,12 @@
   font-size: var(--font-size-sm);
 }
 
+.role-option:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(100%);
+}
+
 /* Auth Footer */
 .auth-footer {
   text-align: center;
@@ -207,3 +213,4 @@
     grid-template-columns: 1fr;
   }
 }
+

@@ -7,27 +7,6 @@ class ErrorResponse(BaseModel):
     code: str
     details: Optional[Dict[str, Any]] = None
 
-class AuthLoginRequest(BaseModel):
-    email: str = Field(..., min_length=1)
-    password: str = Field(..., min_length=1)
-    
-    @validator('email')
-    def validate_email(cls, v):
-        if '@' not in v:
-            raise ValueError('Invalid email format')
-        return v.lower()
-    
-class AuthRegisterRequest(BaseModel):
-    name: str = Field(..., min_length=1)
-    email: str = Field(..., min_length=1)
-    password: str = Field(..., min_length=5)
-    
-    @validator('email')
-    def validate_email(cls, v):
-        if '@' not in v:
-            raise ValueError('Invalid email format')
-        return v.lower()
-
 class SafraDataRequest(BaseModel):
     farm_name: str = Field(..., min_length=1)
     location: str = Field(..., min_length=1)
@@ -38,20 +17,6 @@ class SafraDataRequest(BaseModel):
     processing_method: str = Field(..., min_length=1)
     certifications: list[dict[str, str]] = Field(...)
     notes: str = Field(...)
-
-class SummarizeRequest(BaseModel):
-    farm_name: str = Field(..., min_length=1)
-    location: str = Field(..., min_length=1)
-    harvest_date: str = Field(..., min_length=1)
-    coffee_variety: str = Field(..., min_length=1)
-    altitude: str = Field(..., min_length=1)
-    coffee_bags: int = Field(..., ge=0)  
-    processing_method: str = Field(..., min_length=1)
-    certifications: list[dict[str, str]] = Field(...)
-    notes: str = Field(...)
-
-class SafraIdRequest(BaseModel):
-    safra_id: str = Field(..., min_length=1)
 
 def validate_request_body(data: Dict[str, Any], schema: BaseModel):
     try:

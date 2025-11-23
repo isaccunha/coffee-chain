@@ -1,7 +1,9 @@
-from app import create_app
+from models import create_app
+from routes import bp
 
 app = create_app()
+app.register_blueprint(bp)
 
-# Sobe o servidor Flask
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001)
+

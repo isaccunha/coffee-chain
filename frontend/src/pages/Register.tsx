@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate, Link } from 'react-router-dom'
-import { UserPlus, Mail, Lock, User as UserIcon, Building, AlertCircle, ShieldCheck, ShoppingBag } from 'lucide-react'
+import { UserPlus, Mail, Lock, User as UserIcon, Building, AlertCircle, ShoppingBag } from 'lucide-react'
 import Button from '../components/Button/Button'
 import Card from '../components/Card/Card'
 import { useAuth } from '../context/AuthContext'
@@ -38,8 +38,8 @@ const Register = () => {
       return
     }
 
-    if (formData.password.length < 6) {
-      setError('A senha deve ter pelo menos 6 caracteres')
+    if (formData.password.length < 5) {
+      setError('A senha deve ter pelo menos 5 caracteres')
       return
     }
 
@@ -50,12 +50,12 @@ const Register = () => {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        role,
         organization: formData.organization || undefined,
       })
       navigate('/')
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao criar conta. Tente novamente.')
+        console.log(err.response?.data?.error)
+      setError(err.response?.data?.error || 'Erro ao criar conta. Tente novamente.')
     } finally {
       setIsLoading(false)
     }
@@ -90,15 +90,17 @@ const Register = () => {
               </div>
             </button>
             <button
-              type="button"
-              className={`role-option ${role === 'INSPECTOR' ? 'role-option--active' : ''}`}
-              onClick={() => setRole('INSPECTOR')}
+            type="button"
+            disabled={true}
+            className={`role-option ${role === 'INSPECTOR' ? 'role-option--active' : ''}`}
+            onClick={() => setRole('INSPECTOR')}
             >
-              <ShieldCheck size={24} />
-              <div>
+            <Lock size={20} />
+
+            <div>
                 <span>Fiscal</span>
-                <small>Registro e auditoria</small>
-              </div>
+                <small>{'Função indisponível para cadastro no momento'}</small>
+            </div>
             </button>
           </div>
 
@@ -178,7 +180,7 @@ const Register = () => {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="Mínimo 6 caracteres"
+                  placeholder="Mínimo 5 caracteres"
                   required
                   autoComplete="new-password"
                 />
