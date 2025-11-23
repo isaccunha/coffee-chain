@@ -22,6 +22,12 @@ gateway.interceptors.request.use((config) => {
 
 // handle auth errors for all APIs
 const handleAuthError = (error: any) => {
+  const originalRequest = error.config
+
+  if (originalRequest?.url?.includes('/auth/login')) {
+    return Promise.reject(error)
+  }
+
   if (error.response?.status === 401) {
     localStorage.removeItem('token')
     window.location.href = '/login'
@@ -170,8 +176,8 @@ export const login = async (credentials: LoginCredentials): Promise<AuthResponse
 }
 
 export const register = async (_data: RegisterData): Promise<AuthResponse> => {
-  // ! backend doesn't have register endpoint yet. throw error?
-  throw new Error('registration endpoint not implemented')
+  const response = await gateway.post('/auth/register', _data)
+  return response.data
 }
 
 export const getCurrentUser = async (): Promise<VerifyTokenResponse> => {

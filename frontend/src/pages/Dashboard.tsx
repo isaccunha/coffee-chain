@@ -126,7 +126,7 @@ const Dashboard = () => {
             </div>
 
             {/* Recent Activity */}
-            <div className="dashboard__section">
+            {/* <div className="dashboard__section">
               <h2>Atividade Recente</h2>
               <Card>
                 <div className="activity-list">
@@ -144,7 +144,7 @@ const Dashboard = () => {
                   ))}
                 </div>
               </Card>
-            </div>
+            </div> */}
           </motion.div>
         </div>
       </div>
@@ -236,7 +236,7 @@ const Dashboard = () => {
           </div>
 
           {/* Recent Activity */}
-          <div className="dashboard__section">
+          {/* <div className="dashboard__section">
             <h2>Atividade Recente</h2>
             <Card>
               <div className="activity-list">
@@ -254,7 +254,7 @@ const Dashboard = () => {
                 ))}
               </div>
             </Card>
-          </div>
+          </div> */}
         </motion.div>
       </div>
     </div>

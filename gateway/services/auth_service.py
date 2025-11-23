@@ -49,3 +49,25 @@ class AuthService:
             return False, None, {'message': f'Auth service error: {str(e)}', 'status': 503}
         except Exception as e:
             return False, None, {'message': f'Unexpected error: {str(e)}', 'status': 500}
+        
+    def register(self, name: str, email: str, password: str) -> tuple[bool, Optional[str], Optional[Dict[str, Any]]]:
+        try:
+            response = requests.post(
+                f'{self.auth_url}/users',
+                json={'email': email, 'password': password, 'name': name},
+                timeout=self.timeout
+            )
+            
+            if response.status_code == 201:
+                data = response.json()
+                return True, data, None
+            else:
+                error_data = response.json()
+                error_msg = error_data.get('message', 'Registration failed')
+                return False, None, {'message': error_msg, 'status': response.status_code}
+        except requests.exceptions.Timeout:
+            return False, None, {'message': 'Auth service timeout', 'status': 503}
+        except requests.exceptions.RequestException as e:
+            return False, None, {'message': f'Auth service error: {str(e)}', 'status': 503}
+        except Exception as e:
+            return False, None, {'message': f'Unexpected error: {str(e)}', 'status': 500}

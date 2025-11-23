@@ -890,6 +890,37 @@
   font-weight: 500;
 }
 
+.mini-success-box {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background: #f0fff4;
+  border-left: 4px solid #2ecc71;
+  padding: 16px;
+  border-radius: 6px;
+  /* max-width: 450px; */
+  animation: fadeIn 0.3s ease;
+}
+
+.mini-success-content h4 {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+  color: #2d7a46;
+}
+
+.mini-success-content button {
+    margin: 10px 10px;
+}
+
+.mini-success-close {
+  margin-top: 10px;
+  background: none;
+  border: none;
+  color: #2d7a46;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+
 /* Validation Modal Responsive */
 @media (max-width: 768px) {
   .validation-modal__status {

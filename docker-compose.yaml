@@ -117,8 +117,8 @@ services:
             - POSTGRES_DB=users
             - POSTGRES_USER=postgres
             - POSTGRES_PASSWORD=postgres
-        # ports:
-        #     - "5432:5432"  
+        ports:
+            - "5432:5432"  
         volumes:
             - postgres_data:/var/lib/postgresql
         networks:
@@ -147,8 +147,8 @@ services:
     summary-ai-ms-ollama:
         image: ollama/ollama:latest
         container_name: coffeechain-summary-ai-ms-ollama
-        # ports:
-        #     - "11434:11434"
+        ports:
+            - "11434:11434"
         environment:
             - OLLAMA_HOST=0.0.0.0:11434
             - OLLAMA_LOG_LEVEL=info

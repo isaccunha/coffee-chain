@@ -16,6 +16,17 @@ class AuthLoginRequest(BaseModel):
         if '@' not in v:
             raise ValueError('Invalid email format')
         return v.lower()
+    
+class AuthRegisterRequest(BaseModel):
+    name: str = Field(..., min_length=1)
+    email: str = Field(..., min_length=1)
+    password: str = Field(..., min_length=5)
+    
+    @validator('email')
+    def validate_email(cls, v):
+        if '@' not in v:
+            raise ValueError('Invalid email format')
+        return v.lower()
 
 class SafraDataRequest(BaseModel):
     farm_name: str = Field(..., min_length=1)
@@ -26,7 +37,7 @@ class SafraDataRequest(BaseModel):
     coffee_bags: int = Field(..., gt=0)  
     processing_method: str = Field(..., min_length=1)
     certifications: list[dict[str, str]] = Field(...)
-    notes: str = Field(..., min_length=1)
+    notes: str = Field(...)
 
 class SummarizeRequest(BaseModel):
     farm_name: str = Field(..., min_length=1)
