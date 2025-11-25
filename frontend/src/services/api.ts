@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { CoffeeData, Harvest, Transaction, LoginCredentials, RegisterData, AuthResponse, VerifyTokenResponse } from '../types'
+import { CoffeeData, Transaction, LoginCredentials, RegisterData, AuthResponse, VerifyTokenResponse, SafraData } from '../types'
 
 const GATEWAY_API_URL = import.meta.env.VITE_GATEWAY_API_URL || 'http://fallback:5002'
 
@@ -38,17 +38,7 @@ const handleAuthError = (error: any) => {
 gateway.interceptors.response.use((response) => response, handleAuthError)
 
 // safra/blockchain API - gateway endpoints
-export const createSafra = async (safraData: {
-  farm_name: string
-  location: string
-  harvest_date: string
-  coffee_variety: string
-  altitude: string
-  coffee_bags: number | string
-  processing_method: string
-  certifications: Array<{ name: string }>
-  notes: string
-}): Promise<any> => {
+export const createSafra = async (safraData: SafraData): Promise<any> => {
   const response = await gateway.post('/safra', safraData)
   return response.data.data
 }
@@ -72,69 +62,19 @@ export const validateBlockchain = async (): Promise<any> => {
 export const trackCoffee = async (code: string): Promise<CoffeeData> => {
   try {
     const response = await getSafra(code)
-    const harvest_data = response.data.data;
-
+    const safra = response.data.data;
     if (response.found === false) {
         throw new Error('Safra não encontrada')
     }
-
-    return{
-        id: harvest_data.id || code,
-        altitude: harvest_data.altitude || 'N/A',
-        certifications: harvest_data.certifications || [],
-        coffee_bags: harvest_data.coffee_bags || 'N/A',
-        coffee_variety: harvest_data.coffee_variety || 'N/A',
-        farm_name: harvest_data.farm_name || 'Desconhecido',
-        harvest_date: harvest_data.harvest_date || 'Desconhecido',
-        inserted_at: harvest_data.inserted_at || 'Desconhecido',
-        location: harvest_data.location || 'Desconhecido',
-        notes: harvest_data.notes || 'Desconhecido',
-        owner: harvest_data.owner || 'Desconhecido',
-        processing_method: harvest_data.processing_method || 'Desconhecido',
-    }
+    return safra
   } catch (error) {
     throw new Error('Safra não encontrada')
   }
 }
 
-// producer API - maps to gateway /safra endpoints
-export const createHarvest = async (harvest: Partial<Harvest>): Promise<any> => {
-  const safraPayload = {
-    farm_name: harvest.farm_name || '',
-    location: harvest.location || '',
-    harvest_date: harvest.harvest_date || new Date().toISOString().split('T')[0],
-    coffee_variety: harvest.coffee_variety || '',
-    altitude: String(harvest.altitude || ''),
-    coffee_bags: harvest.coffee_bags ?? 0, // ou '', se fizer sentido
-    processing_method: harvest.processing_method || '',
-    certifications: harvest.certifications ?? [], // garante array
-    notes: harvest.notes || ''
-  }
-  return createSafra(safraPayload)
-}
-
-export const getHarvests = async (): Promise<CoffeeData[]> => {
-  // Gateway doesn't have list all endpoint, return empty for now
-  // In production, could fetch from blockchain directly
-  return []
-}
-
 export const getHarvestById = async (id: number): Promise<CoffeeData> => {
-  const data = await getSafra(String(id))
-  return {
-    id: data?.data?.id || '',
-    altitude: String(data?.data?.altitude) || '',
-    certifications: (data?.data?.certifications || []).map((c: any) => c.name),
-    coffee_variety: data?.data?.coffee_variety || '',
-    coffee_bags: data?.data?.coffee_bags || 0,
-    farm_name: data?.data?.farm_name || '',
-    harvest_date: data?.data?.harvest_date || '',
-    inserted_at: data?.data?.inserted_at || '',
-    location: data?.data?.location || '',
-    notes: data?.data?.notes || '',
-    owner: data?.data?.owner || '',
-    processing_method: data?.data?.processing_method || '', 
-  }
+  const data = await getSafra(String(id));
+  return data
 }
 
 // blockchain API - gateway safra validation
@@ -176,8 +116,8 @@ export const verifyBlockchainHash = async (hash: string): Promise<boolean> => {
 }
 
 // summary AI API - via gateway
-export const generateSummary = async (harvestData: any): Promise<string> => {
-  const response = await gateway.post('/summary', harvestData)
+export const generateSummary = async (safraData: SafraData): Promise<string> => {
+  const response = await gateway.post('/summary', safraData)
 
   if (response.data.data.metadata.fallback_mode === true) {
     return 'Falha ao gerar resumo com IA, tente novamente mais tarde.'
@@ -204,5 +144,3 @@ export const getCurrentUser = async (): Promise<VerifyTokenResponse> => {
 
 export { gateway }
 export default gateway
-
-

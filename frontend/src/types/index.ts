@@ -17,18 +17,6 @@ export interface CoffeeData {
   processing_method: string
 }
 
-export interface Harvest {
-  altitude: string
-  certifications: CoffeeCertification[]
-  coffee_bags: number
-  coffee_variety: string
-  farm_name: string
-  harvest_date: string
-  location: string
-  notes: string
-  processing_method: string
-}
-
 export interface Transaction {
   id: number
   type: 'Registro' | 'Processamento' | 'Colheita' | 'Transporte'
@@ -76,4 +64,16 @@ export interface AuthenticatedUser {
 export interface VerifyTokenResponse {
   success: boolean
   user: AuthenticatedUser
+}
+
+export interface SafraData {
+  farm_name: string
+  location: string
+  harvest_date: string
+  coffee_variety: string
+  altitude: string
+  coffee_bags: number | string
+  processing_method: string
+  certifications: Array<{ name: string }>
+  notes: string
 }
