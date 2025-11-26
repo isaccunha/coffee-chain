@@ -10,6 +10,8 @@ Repositório para o ground-breaking, job-getter, interviewer-impresser "coffee-c
   <img src="/frontend/assets/gif-coffee-chain.gif" alt="CoffeeChain Demo" width="500"/>
 </div>
 
+---
+
 ## Como rodar
 
 A aplicação pode ser executada inteiramente via Docker Compose, que sobe todos os microsserviços, banco de dados, frontend e o modelo de IA.
@@ -33,6 +35,7 @@ Isso irá:
 - Mínimo 4GB de RAM disponível (para Ollama)
 - Conexão com internet para download do modelo LLM (~2GB)
 
+---
 
 ## Features
 
@@ -43,6 +46,8 @@ Isso irá:
 - **Rastreamento Completo**: Histórico de movimentações das safras
 - **Interface Moderna**: Frontend com React + TypeScript
 - **Microserviços**: Arquitetura escalável e modulada
+
+---
 
 ## Problema e Motivação
 
@@ -58,6 +63,8 @@ O projeto **CoffeeChain** resolve essa dor oferecendo:
 - Sumarização inteligente por IA para acelerar auditorias  
 - Autenticação distribuída garantindo disponibilidade dos microsserviços  
 
+---
+
 ## Relevância do Problema
 
 O mercado internacional exige cada vez mais transparência, certificações e rastreabilidade do café. Segundo o [CBI](https://www.cbi.eu/market-information/coffee/certified-coffee/market-potential), cafés certificados são justamente os que apresentam maior potencial de crescimento, pois consumidores europeus e norte-americanos pagam mais por produtos com origem comprovada.
@@ -66,6 +73,7 @@ Porém, um artigo da [Perfect Daily Grind](https://perfectdailygrind.com/2025/09
 
 Ou seja: existe demanda global por café rastreável e certificado, mas faltam soluções simples, acessíveis e confiáveis para registrar e comprovar a origem da produção. Nosso projeto atua exatamente nessa lacuna.
 
+---
 
 ## API Gateway
 
@@ -98,6 +106,8 @@ POST /summary
 GET /summary/health
 ```
 
+---
+
 ## Stack Tecnológico
 
 ### Frontend
@@ -110,6 +120,8 @@ GET /summary/health
 - **Auth**: NestJS + Prisma + PostgreSQL
 - **Blockchain**: Python Flask (blockchain customizado)
 - **Summary**: Python Flask + Ollama (llama3.2:1b)
+
+---
 
 ## Arquitetura e Agentes 
 
@@ -141,6 +153,68 @@ A interação entre componentes ocorre por meio dos microsserviços:
 - **summary-ai** — geração de resumos via IA  
 - **frontend** — interface do usuário
 
+---
+
+# Diagramas e modelos
+
+## Visão inicial (Pré-Modelagem)
+
+<div align="center">
+  <img src="/docs/pre-modelagem.png" alt="pre-modelagem" width="800"/>
+</div>
+
+#### Arquitetura Inicial e Suas Vulnerabilidades
+
+Na arquitetura inicial do sistema, todos os microserviços compartilhavam uma única rede interna, com a API Gateway sendo responsável tanto pela autenticação quanto pela autorização dos usuários. A API Gateway gerava os tokens JWT, incluindo as roles no payload, e validava os tokens nas requisições subsequentes. Embora simples, essa abordagem apresentava diversas vulnerabilidades, principalmente no que diz respeito à segurança das chaves de autenticação e à centralização do processo. A API Gateway, sendo a única responsável pela autenticação, representava um ponto único de falha, e a própria transmissão do token por toda a rede interna poderia ser interceptada, caso não fosse devidamente protegida. Além disso, o fato de os microserviços compartilharem a mesma rede interna sem um isolamento adequado expunha o sistema a riscos de escalonamento lateral, caso um serviço fosse comprometido. Por fim, a falta de uma separação entre autenticação e autorização tornava difícil gerenciar de forma eficiente os acessos em uma arquitetura distribuída.
+
+## DFD
+
+<div align="center">
+  <img src="/docs/DFD.png" alt="DFD" width="800"/>
+</div>
+
+
+| ID | Tipo            | Nome / Descrição | Fluxo de Dados Associado                                                                                                                                                                                                                                                                | Trust Boundary                                                                                                |
+|----|-----------------|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| E1 | External Entity | User             | Request → Browser Client; Response ← Browser Client;                                                                                                                                                                                                                                    | Localização: User’s Machine; Fluxos atravessam: nenhum;                                                       |
+| P1 | Processo        | Browser Client   | Request ← User; Response → User; HTTP Access Request → API Gateway; HTTP Response ← API Gateway;                                                                                                                                                                                        | Localização: User’s Machine; Fluxos atravessam: User’s Machine → Internet;                                    |
+| P2 | Processo        | API Gateway      | HTTP Access Request ← Browser; HTTP Response → Browser; Authentication Credentials → Auth MS; Authorization Response ← Auth MS; Harvest Request → Blockchain MS; Harvest Response ← Blockchain MS; Summarization Request → Summarizer AI MS; Summarization Response ← Summarizer AI MS; | Localização: Docker Network; Fluxos atravessam: Internet → Docker Network;                                    |
+| P3 | Processo        | Auth MS          | Authentication Credentials ← API Gateway; Authorization Response → API Gateway; User Request → Users DB; User Response ← Users DB;                                                                                                                                                      | Localização: Docker Network; Fluxos atravessam: Docker Network → Databases;                                   |
+| P4 | Processo        | Blockchain MS    | Harvest Request ← API Gateway; Harvest Response → API Gateway; Harvest Request → Blockchain DB; Harvest Response ← Blockchain DB;                                                                                                                                                       | Localização: Docker Network; Fluxos atravessam: Docker Network → Databases;                                   |
+| P5 | Processo        | Summarizer AI MS | Summarization Request ← API Gateway; Summarization Response → API Gateway;                                                                                                                                                                                                              | Localização: Docker Network; Fluxos atravessam: nenhum (todos os fluxos permanecem dentro da Docker Network); |
+| D1 | Data Store      | Users Database   | User Request ← Auth MS; User Response → Auth MS;                                                                                                                                                                                                                                        | Localização: Databases; Fluxos atravessam: nenhum (processo que acessa está na boundary anterior);            |
+| D2 | Data Store      | Blockchain       | Harvest Request ← Blockchain MS; Harvest Response → Blockchain MS;                                                                                                                                                                                                                      | Localização: Databases; Fluxos atravessam: nenhum;                                                            |
+
+## Modelagem de Ameaças
+
+| ID  | Categoria STRIDE           | DFD                         | Descrição                                                                                    | Causa                                                 | Prob. | Impacto    | Risco   | Mitigação                                                                     |
+|-----|----------------------------|-----------------------------|----------------------------------------------------------------------------------------------|-------------------------------------------------------|-------|------------|---------|-------------------------------------------------------------------------------|
+| T1  | S – Spoofing               | E1 (User) → P1              | Atacante se passa por usuário legítimo usando credenciais roubadas ou brute force            | Falta de MFA; senhas fracas; vazamento de credenciais | Média | Alto       | Alto    | Implementar MFA; limitar tentativas; usar senha forte; salvar hash da senha;  |
+| T2  | T – Tampering              | P1 ↔ P2                     | Manipulação de dados HTTP (ex.: alterar campos de requisição)                                | Falta de TLS ou má configuração de HTTPS              | Baixa | Alto       | Médio   | TLS obrigatório;                                                              |
+| T3  | T – Tampering              | P2 ↔ P3 (Auth MS)           | Alteração maliciosa das requisições de autenticação                                          | Gateway sem validação adequada de payload             | Média | Alto       | Alto    | JSON schema validation;                                                       |
+| T4  | R – Repudiation            | Todos os fluxos via P2      | Usuário ou serviço nega ter realizado operação (ex.: login, harvest, summary)                | Falta de logs ou logs incompletos                     | Média | Alto       | Alto    | Auditoria centralizada; logs; timestamps;                                     |
+| T5  | I – Information Disclosure | P3 ↔ D1 (Users DB)          | Vazamento de dados sensíveis de usuários                                                     | Banco sem criptografia; falha de controle de acesso   | Baixa | Muito Alto | Alto    | Criptografia em repouso; acesso restrito;                                     |
+| T6  | D – Denial of Service      | P1 → P2 (API Gateway)       | DDoS satura o gateway e impede usuários legítimos                                            | Ausência de rate limit                                | Alta  | Alto       | Crítico | Rate limiting; proteção DDoS;                                                 |
+| T7  | D – Denial of Service      | P2 → P5 (Summarizer AI MS)  | Respostas lentas por overload das operações de IA                                            | Microsserviço sem isolamento de recursos              | Média | Médio      | Médio   | Implementar padrão de resiliência fail-fast;                                  |
+| T8  | E – Elevation of Privilege | P2 ↔ P3 (Auth MS)           | Usuário comum acessa funções de admin via manipulação de token                               | Falha ou inexistência de validação do claim “role”    | Média | Alto       | Alto    | Validação de claims em cada microsserviço;                                    |
+| T9  | D – Denial of Service      | P1 → P2 (Gateway)           | Se o gateway falhar, toda a plataforma fica indisponível (single point of failure)           | Gateway como único ponto de entrada                   | Média | Muito Alto | Alto    | Replicação; failover; autoscaling; health-checks                              |
+| T10 | I – Information Disclosure | P4 ↔ D2 (Blockchain Ledger) | Logs podem conter dados sensíveis ou identificadores pessoais permanentes (não apagáveis)    | Audit trail imutável contendo PII                     | Média | Muito Alto | Alto    | Minimizar PII; hashing; segregação de logs                                    |
+| T11 | S – Spoofing               | P2 ↔ P3/P4/P5               | Microsserviço aceita token expirado ou assinado com chave antiga                             | Clock skew; falta de sync de JWKS                     | Média | Alto       | Alto    | Cache expira rápido; sync de chaves; verificar exp/iat                        |
+| T12 | E – Elevation of Privilege | P2 ↔ P3/P4/P5               | Serviços validam tokens, mas interpretam claims de forma inconsistente                       | Implementações divergentes entre MS                   | Média | Alto       | Alto    | Biblioteca padrão; contrato formal de claims                                  |
+| T13 | I – Information Disclosure | P2 ↔ P3 (Auth MS)           | Vazamento da chave privada de validação permite criação de tokens falsos                     | Gestão inadequada de chaves                           | Baixa | Muito Alto | Alto    | Rotação de chaves; vault; segregação de permissões                            |
+| T14 | T – Tampering              | P2                          | Manipulação do token para trocar o campo “role” se assinatura não for conferida corretamente | Verificação incompleta da assinatura JWT              | Baixa | Alto       | Médio   | Validação estrita de assinatura; bloqueio de tokens sem algoritmo             |
+
+## Visão Final (Pós-Modelagem)
+
+<div align="center">
+  <img src="/docs/pos-modelagem.png" alt="pos-modelagem" width="800"/>
+</div>
+
+#### Arquitetura Pós-Modelagem e Solução dos Problemas
+
+Após a modelagem de ameaças e uma análise detalhada, a arquitetura foi significativamente aprimorada. A principal mudança foi a introdução de um microserviço dedicado exclusivamente à autenticação (Auth MS), que utiliza criptografia RSA para gerar e validar tokens JWT de forma segura. Nesse novo modelo, o Auth MS é o único detentor da chave privada, enquanto os outros microserviços possuem apenas a chave pública, o que impede que qualquer outro serviço manipule ou valide os tokens diretamente. Essa mudança solucionou problemas críticos de segurança, pois a chave privada fica restrita a um único ponto, protegendo o sistema contra vazamentos e compromissos. A arquitetura agora conta com uma rede interna privada para cada microserviço, o que isola ainda mais os serviços e dificulta ataques de escalonamento lateral. A autenticação passa a ser centralizada exclusivamente no Auth MS, enquanto os demais microserviços ficam responsáveis apenas pela validação do token, de acordo com as permissões e roles definidas no payload. Esse modelo melhora a resiliência, a segurança e a escalabilidade do sistema, minimizando os riscos apontados na modelagem de ameaças.
+
+---
 
 ## Mitigações e Medidas de Segurança
 
