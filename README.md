@@ -240,4 +240,16 @@ Essas medidas reduzem riscos de uso inadequado, falhas de autenticação e alter
 
 ## Autoria
 
-[Gabriel Coelho Costa](https://github.com/gabrielzinCoelho)<br>[Isac Gonçalves Cunha](https://github.com/isaccunha)<br>[Otávio Sbampato](https://github.com/otaviosbampato)<br>[Paulo Henrique Ribeiro Alves](https://github.com/paulohenrique64)
+<div align="center">
+  <img src="docs/authors.png" alt="authors" usemap="#workmap" width="800">
+</div>
+
+<map name="workmap">
+  <area shape="rect" coords="45,75,155,105" alt="isac" href="https://github.com/isaccunha">
+  <area shape="rect" coords="200,65,340,95" alt="paulo" href="https://github.com/paulohenrique64">
+  <area shape="rect" coords="360,30,530,60" alt="otavio" href="https://github.com/otaviosbampato">
+  <area shape="rect" coords="610,65,770,95" alt="gabriel" href="https://github.com/gabrielzinCoelho">
+</map>
+<br/>
+
+>![TIP] Tente clicar nos nossos @ na imagem.
