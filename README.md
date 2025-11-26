@@ -237,6 +237,7 @@ O CoffeeChain implementa diversas estratégias para garantir segurança, disponi
 
 Essas medidas reduzem riscos de uso inadequado, falhas de autenticação e alterações indevidas nos dados.
 
+---
 
 ## Autoria
 
@@ -252,4 +253,5 @@ Essas medidas reduzem riscos de uso inadequado, falhas de autenticação e alter
 </map>
 <br/>
 
->![TIP] Tente clicar nos nossos @ na imagem.
+>[!TIP] 
+> Tente clicar nos nossos @ na imagem.
