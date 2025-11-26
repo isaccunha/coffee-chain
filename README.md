@@ -242,7 +242,7 @@ Essas medidas reduzem riscos de uso inadequado, falhas de autenticação e alter
 ## Autoria
 
 <div align="center">
-  <img src="docs/authors.png" alt="authors" usemap="#workmap" width="800">
+  <img src="docs/authors.png" alt="authors" usemap="#workmap" width="800" data-disable-hover-zoom data-image-zoom-disabled>
 </div>
 
 <map name="workmap">
