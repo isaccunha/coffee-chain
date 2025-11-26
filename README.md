@@ -243,6 +243,7 @@ Essas medidas reduzem riscos de uso inadequado, falhas de autenticação e alter
 
 <div align="center">
   <img src="docs/authors.png" alt="authors" usemap="#workmap" width="800" data-disable-hover-zoom data-image-zoom-disabled>
+  <!-- none of this map works, as github has made a full-size invisible, clickable layer over any images you upload :( -->
 </div>
 
 <map name="workmap">
@@ -253,5 +254,4 @@ Essas medidas reduzem riscos de uso inadequado, falhas de autenticação e alter
 </map>
 <br/>
 
->[!TIP] 
-> Tente clicar nos nossos @ na imagem.
+[Gabriel Coelho Costa](https://github.com/gabrielzinCoelho)<br>[Isac Gonçalves Cunha](https://github.com/isaccunha)<br>[Otávio Sbampato](https://github.com/otaviosbampato)<br>[Paulo Henrique Ribeiro Alves](https://github.com/paulohenrique64)
